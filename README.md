@@ -1,6 +1,6 @@
 # The Vault — A Living Archive
 
-A self-contained, single-page creative archive for music, writing, and visual art. Built as a pure HTML/CSS/JS experience with no frameworks or dependencies.
+A self-contained, single-page creative archive by **Tembeh** — music, writing, and visual art grown in solitude, shared with intention. Built as a pure HTML/CSS/JS experience with no frameworks or dependencies.
 
 ## Features
 
@@ -52,6 +52,10 @@ All content is stored in the browser's `localStorage` as base64 data URLs. Keep 
 3. Set your password on first visit
 4. Start adding your music, writing, and art
 
+## Artist
+
+Created by **Tembeh** — a multidisciplinary artist working across sound, word, and image.
+
 ## License
 
-All rights reserved.
+All rights reserved. &copy; Tembeh
