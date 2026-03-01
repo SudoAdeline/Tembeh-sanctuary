@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vault — A Living Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --moss: #2d3b2a;
+    --bark: #3d2e1e;
+    --fern: #4a6741;
+    --sage: #7a9c6e;
+    --lichen: #a8b89a;
+    --petal: #c9b49a;
+    --morning: #e8dfc8;
+    --dew: #f2ede0;
+    --mist: #d4cbb8;
+    --gold: #b8935a;
+    --bloom: #8b6f5c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--moss);
+    color: var(--dew);
+    font-family: 'Karla', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--lichen);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.3s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(168,184,154,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:hover .cursor-ring { opacity: 1; }
+
+  /* Floating particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(168,184,154,0.15);
+    animation: float-up linear infinite;
+  }
+
+  @keyframes float-up {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .forest-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 110%, rgba(74,103,65,0.6) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 100%, rgba(45,59,42,0.9) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 100%, rgba(45,59,42,0.9) 0%, transparent 60%),
+      linear-gradient(to bottom, #0e1510 0%, #1a2718 40%, #2d3b2a 100%);
+  }
+
+  /* SVG Tree silhouettes */
+  .trees {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .eyebrow {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: rise 1.2s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 12vw, 10rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--morning);
+    opacity: 0;
+    animation: rise 1.4s ease 0.6s forwards;
+    margin-bottom: 0.2em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--lichen);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--mist);
+    opacity: 0;
+    animation: rise 1.4s ease 0.9s forwards;
+    margin-bottom: 3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: rise 1.4s ease 1.2s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--moss);
+    background: var(--lichen);
+    border: none;
+    padding: 1rem 2.5rem;
+    cursor: none;
+    transition: background 0.3s, transform 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--morning); transform: translateY(-2px); }
+
+  .btn-ghost {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lichen);
+    background: transparent;
+    border: 1px solid rgba(168,184,154,0.4);
+    padding: 1rem 2.5rem;
+    cursor: none;
+    transition: border-color 0.3s, color 0.3s, transform 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--lichen); color: var(--morning); transform: translateY(-2px); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--sage);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: rise 1s ease 2s forwards;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--sage), transparent);
+    animation: pulse-line 2s ease infinite;
+  }
+  @keyframes pulse-line {
+    0%,100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.8rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(14,21,16,0.8), transparent);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--lichen);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mist);
+    text-decoration: none;
+    transition: color 0.3s;
+    cursor: none;
+  }
+  .nav-links a:hover { color: var(--morning); }
+  .nav-cta {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--moss);
+    background: var(--sage);
+    padding: 0.6rem 1.4rem;
+    text-decoration: none;
+    transition: background 0.3s;
+    cursor: none;
+  }
+  .nav-cta:hover { background: var(--lichen); }
+
+  /* === SECTIONS === */
+  section { position: relative; }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1rem;
+  }
+
+  /* === ABOUT / INTRO === */
+  .intro {
+    padding: 8rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .intro-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--morning);
+    margin-bottom: 2rem;
+  }
+  .intro-text h2 em { font-style: italic; color: var(--lichen); }
+
+  .intro-text p {
+    color: var(--mist);
+    line-height: 1.9;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-visual {
+    position: relative;
+    height: 480px;
+  }
+
+  .vinyl-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .vinyl {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: 
+      radial-gradient(circle at 50% 50%, #1a1a1a 22%, transparent 22%),
+      repeating-radial-gradient(circle at 50% 50%, #1e1e1e 0px, #1e1e1e 2px, #222 2px, #222 4px);
+    box-shadow: 0 0 80px rgba(74,103,65,0.3), 0 0 0 1px rgba(168,184,154,0.1);
+    animation: spin 20s linear infinite;
+    position: relative;
+  }
+  .vinyl::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--fern) 30%, var(--moss) 100%);
+    box-shadow: 0 0 20px rgba(74,103,65,0.5);
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .floating-leaf {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.6;
+    animation: sway 6s ease-in-out infinite;
+  }
+  .floating-leaf:nth-child(1) { top: 10%; right: 10%; animation-delay: 0s; }
+  .floating-leaf:nth-child(2) { top: 60%; left: 5%; animation-delay: -2s; font-size: 1.4rem; }
+  .floating-leaf:nth-child(3) { bottom: 15%; right: 20%; animation-delay: -4s; font-size: 1.6rem; }
+
+  @keyframes sway {
+    0%,100% { transform: rotate(-8deg) translateY(0); }
+    50% { transform: rotate(8deg) translateY(-12px); }
+  }
+
+  /* === VAULT PREVIEW === */
+  .vault-section {
+    background: linear-gradient(to bottom, var(--moss), #1a2410);
+    padding: 6rem 3rem;
+  }
+
+  .vault-header {
+    max-width: 1100px;
+    margin: 0 auto 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .vault-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: var(--morning);
+    line-height: 1.1;
+  }
+  .vault-header h2 em { font-style: italic; color: var(--lichen); }
+
+  .vault-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+  }
+
+  .vault-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    cursor: none;
+    group: true;
+  }
+
+  .vault-card-bg {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .vault-card:hover .vault-card-bg { transform: scale(1.08); }
+
+  .vc-music .vault-card-bg {
+    background: 
+      radial-gradient(ellipse at 30% 70%, rgba(74,103,65,0.6) 0%, transparent 60%),
+      linear-gradient(135deg, #1a2a18 0%, #0e1a0c 100%);
+  }
+  .vc-writing .vault-card-bg {
+    background: 
+      radial-gradient(ellipse at 70% 30%, rgba(93,75,55,0.5) 0%, transparent 60%),
+      linear-gradient(135deg, #221a12 0%, #150f0a 100%);
+  }
+  .vc-art .vault-card-bg {
+    background: 
+      radial-gradient(ellipse at 50% 60%, rgba(74,103,65,0.4) 0%, transparent 60%),
+      linear-gradient(135deg, #1c2418 0%, #111810 100%);
+  }
+
+  .vault-card-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(10,15,9,0.9) 0%, transparent 60%);
+  }
+
+  .vault-card-icon {
+    position: absolute;
+    top: 2rem; left: 2rem;
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+
+  .vault-card-lock {
+    position: absolute;
+    top: 2rem; right: 2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .vault-card:hover .vault-card-lock { opacity: 1; }
+
+  .vault-card-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.5rem;
+  }
+
+  .vault-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--morning);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+
+  .vault-card-desc {
+    font-size: 0.8rem;
+    color: var(--mist);
+    line-height: 1.7;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .vault-card:hover .vault-card-desc { opacity: 1; transform: translateY(0); }
+
+  /* Decorative vine elements on cards */
+  .vine-deco {
+    position: absolute;
+    top: 0; right: 0;
+    width: 120px;
+    height: 200px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  /* === MEMBERSHIP === */
+  .membership {
+    padding: 8rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .membership h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+  .membership h2 em { font-style: italic; color: var(--lichen); }
+
+  .membership p {
+    color: var(--mist);
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 4rem;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tiers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+
+  .tier {
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .tier:hover { transform: translateY(-4px); }
+
+  .tier-free {
+    background: rgba(45,59,42,0.5);
+    border: 1px solid rgba(122,156,110,0.15);
+  }
+  .tier-paid {
+    background: rgba(74,103,65,0.2);
+    border: 1px solid rgba(168,184,154,0.2);
+  }
+
+  .tier-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1rem;
+  }
+
+  .tier-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--morning);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .tier-price span {
+    font-size: 1.2rem;
+    vertical-align: super;
+    color: var(--lichen);
+  }
+  .tier-period {
+    font-size: 0.75rem;
+    color: var(--mist);
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .tier-features {
+    list-style: none;
+    margin-bottom: 2rem;
+  }
+  .tier-features li {
+    font-size: 0.85rem;
+    color: var(--mist);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(168,184,154,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .tier-features li::before {
+    content: '—';
+    color: var(--sage);
+    font-size: 0.7rem;
+  }
+  .tier-features li.locked { opacity: 0.35; }
+  .tier-features li.locked::before { content: '○'; }
+
+  .tier-glow {
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(122,156,110,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* === AUDIO PREVIEW === */
+  .audio-preview {
+    background: rgba(20,28,19,0.6);
+    border: 1px solid rgba(122,156,110,0.1);
+    padding: 2rem;
+    max-width: 400px;
+    margin: 0 auto 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audio-track-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--morning);
+    margin-bottom: 0.3rem;
+  }
+  .audio-artist {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1.5rem;
+  }
+
+  .audio-waveform {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 40px;
+    margin-bottom: 1rem;
+  }
+  .wave-bar {
+    flex: 1;
+    background: var(--fern);
+    border-radius: 2px;
+    opacity: 0.4;
+    animation: wave-bounce 1.2s ease-in-out infinite;
+  }
+  .wave-bar.active { opacity: 1; background: var(--lichen); }
+  @keyframes wave-bounce {
+    0%,100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .play-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--fern);
+    border: none;
+    color: var(--morning);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { background: var(--sage); transform: scale(1.05); }
+
+  .audio-time {
+    font-size: 0.75rem;
+    color: var(--mist);
+    letter-spacing: 0.05em;
+    flex: 1;
+    text-align: right;
+  }
+
+  .audio-bar-bg {
+    flex: 1;
+    height: 2px;
+    background: rgba(168,184,154,0.2);
+    border-radius: 1px;
+    position: relative;
+    cursor: none;
+  }
+  .audio-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 35%;
+    background: var(--lichen);
+    border-radius: 1px;
+  }
+
+  /* === FOOTER === */
+  footer {
+    padding: 4rem 3rem;
+    border-top: 1px solid rgba(122,156,110,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--lichen);
+  }
+
+  .footer-note {
+    font-size: 0.7rem;
+    color: var(--sage);
+    letter-spacing: 0.15em;
+    text-align: right;
+    line-height: 2;
+  }
+
+  /* Divider vine */
+  .divider {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--fern);
+    font-size: 1.5rem;
+    opacity: 0.4;
+    letter-spacing: 1rem;
+  }
+
+  /* Ambient glow blobs */
+  .glow-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem; }
+    .nav-links { display: none; }
+    .intro { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
+    .intro-visual { height: 280px; }
+    .vault-grid { grid-template-columns: 1fr; }
+    .tiers { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-note { text-align: center; }
+    .vault-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+
+  /* === CONTENT SECTIONS === */
+  .content-section {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .content-section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  .content-section-title em { font-style: italic; color: var(--lichen); }
+  .content-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--sage);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* Music Section */
+  .music-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .music-card {
+    background: rgba(20,28,19,0.6);
+    border: 1px solid rgba(122,156,110,0.12);
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: none;
+  }
+  .music-card:hover { transform: translateY(-3px); border-color: rgba(122,156,110,0.3); }
+  .music-card-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #1a2a18, #0e1a0c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--fern);
+    overflow: hidden;
+    position: relative;
+  }
+  .music-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+  .music-card-info { padding: 1.2rem; }
+  .music-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--morning);
+    margin-bottom: 0.2rem;
+  }
+  .music-card-artist {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.8rem;
+  }
+  .music-card-desc {
+    font-size: 0.8rem;
+    color: var(--mist);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .music-player-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .music-play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--fern);
+    border: none;
+    color: var(--morning);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .music-play-btn:hover { background: var(--sage); }
+  .music-progress-wrap {
+    flex: 1;
+    height: 3px;
+    background: rgba(168,184,154,0.15);
+    border-radius: 2px;
+    cursor: none;
+    position: relative;
+  }
+  .music-progress-fill {
+    height: 100%;
+    background: var(--lichen);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+  .music-time {
+    font-size: 0.65rem;
+    color: var(--sage);
+    min-width: 70px;
+    text-align: right;
+  }
+
+  /* Writing Section */
+  .writing-list { display: flex; flex-direction: column; gap: 1px; }
+  .writing-item {
+    background: rgba(20,28,19,0.4);
+    border: 1px solid rgba(122,156,110,0.08);
+    padding: 2rem;
+    cursor: none;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .writing-item:hover { background: rgba(20,28,19,0.7); border-color: rgba(122,156,110,0.2); }
+  .writing-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+  .writing-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--morning);
+  }
+  .writing-item-date {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+  .writing-item-preview {
+    font-size: 0.85rem;
+    color: var(--mist);
+    line-height: 1.7;
+    max-height: 3.4em;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .writing-item.expanded .writing-item-preview {
+    max-height: 2000px;
+  }
+  .writing-expand-hint {
+    font-size: 0.7rem;
+    color: var(--sage);
+    letter-spacing: 0.15em;
+    margin-top: 0.8rem;
+    transition: opacity 0.3s;
+  }
+  .writing-item.expanded .writing-expand-hint { opacity: 0.4; }
+
+  /* Art Section */
+  .art-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 4px;
+  }
+  .art-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    cursor: none;
+    position: relative;
+    background: rgba(20,28,19,0.6);
+  }
+  .art-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
+  }
+  .art-item:hover img { transform: scale(1.06); }
+  .art-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,15,9,0.85) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .art-item:hover .art-item-overlay { opacity: 1; }
+  .art-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--morning);
+  }
+  .art-item-desc {
+    font-size: 0.7rem;
+    color: var(--mist);
+    margin-top: 0.3rem;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(10,15,9,0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: none;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox-close {
+    position: absolute;
+    top: 2rem; right: 2rem;
+    background: none;
+    border: none;
+    color: var(--lichen);
+    font-size: 1.5rem;
+    cursor: none;
+    z-index: 2;
+    transition: color 0.3s;
+  }
+  .lightbox-close:hover { color: var(--morning); }
+  .lightbox-img {
+    max-width: 85vw;
+    max-height: 75vh;
+    object-fit: contain;
+  }
+  .lightbox-info {
+    text-align: center;
+    margin-top: 1.5rem;
+    max-width: 500px;
+  }
+  .lightbox-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--morning);
+    margin-bottom: 0.3rem;
+  }
+  .lightbox-desc {
+    font-size: 0.8rem;
+    color: var(--mist);
+  }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(74,103,65,0.4);
+    border: 1px solid rgba(122,156,110,0.2);
+    color: var(--morning);
+    font-size: 1.5rem;
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: background 0.3s;
+  }
+  .lightbox-nav:hover { background: rgba(74,103,65,0.7); }
+  .lightbox-prev { left: 1.5rem; }
+  .lightbox-next { right: 1.5rem; }
+
+  /* === ADMIN PANEL === */
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    background: rgba(14,21,16,0.97);
+    display: none;
+    overflow-y: auto;
+  }
+  .admin-overlay.active { display: block; }
+  .admin-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(122,156,110,0.15);
+    padding-bottom: 1.5rem;
+  }
+  .admin-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--morning);
+  }
+  .admin-close {
+    background: none;
+    border: 1px solid rgba(122,156,110,0.3);
+    color: var(--lichen);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .admin-close:hover { border-color: var(--lichen); color: var(--morning); }
+
+  .admin-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+  }
+  .admin-tab {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: rgba(45,59,42,0.2);
+    border: 1px solid rgba(122,156,110,0.1);
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+  .admin-tab:hover { color: var(--morning); }
+  .admin-tab.active {
+    background: rgba(74,103,65,0.3);
+    color: var(--morning);
+    border-color: rgba(122,156,110,0.3);
+  }
+
+  .admin-panel { display: none; }
+  .admin-panel.active { display: block; }
+
+  .admin-form { margin-bottom: 2.5rem; }
+  .admin-form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--lichen);
+    margin-bottom: 1.5rem;
+  }
+  .admin-field {
+    margin-bottom: 1.2rem;
+  }
+  .admin-field label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.4rem;
+  }
+  .admin-field input[type="text"],
+  .admin-field textarea {
+    width: 100%;
+    background: rgba(20,28,19,0.6);
+    border: 1px solid rgba(122,156,110,0.2);
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .admin-field input:focus,
+  .admin-field textarea:focus { border-color: var(--sage); }
+  .admin-field textarea { min-height: 120px; resize: vertical; }
+  .admin-field input[type="file"] {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.8rem;
+    color: var(--mist);
+  }
+  .admin-field input[type="file"]::file-selector-button {
+    background: var(--fern);
+    color: var(--morning);
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    font-family: 'Karla', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .admin-btn {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    border: none;
+  }
+  .admin-btn-save {
+    background: var(--fern);
+    color: var(--morning);
+  }
+  .admin-btn-save:hover { background: var(--sage); }
+  .admin-btn-delete {
+    background: rgba(140,50,50,0.4);
+    color: #d4a0a0;
+    margin-left: 0.5rem;
+  }
+  .admin-btn-delete:hover { background: rgba(140,50,50,0.7); }
+  .admin-btn-edit {
+    background: rgba(74,103,65,0.3);
+    color: var(--lichen);
+    margin-left: 0.5rem;
+  }
+  .admin-btn-edit:hover { background: rgba(74,103,65,0.5); }
+
+  .admin-items-list { margin-top: 2rem; }
+  .admin-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(20,28,19,0.4);
+    border: 1px solid rgba(122,156,110,0.08);
+    margin-bottom: 2px;
+  }
+  .admin-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--morning);
+  }
+  .admin-item-actions { display: flex; gap: 0.3rem; }
+
+  /* Password gate */
+  .admin-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1.5rem;
+  }
+  .admin-gate h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--morning);
+  }
+  .admin-gate p {
+    font-size: 0.85rem;
+    color: var(--sage);
+    text-align: center;
+    max-width: 400px;
+  }
+  .admin-gate input {
+    background: rgba(20,28,19,0.6);
+    border: 1px solid rgba(122,156,110,0.3);
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+    text-align: center;
+    outline: none;
+    width: 260px;
+  }
+  .admin-gate input:focus { border-color: var(--lichen); }
+  .admin-gate-error {
+    color: #d4a0a0;
+    font-size: 0.8rem;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Floating Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Navigation -->
+<nav>
+  <a href="#" class="nav-logo">the vault</a>
+  <ul class="nav-links">
+    <li><a href="#music">Music</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#art">Art</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#membership" class="nav-cta">Enter the Vault</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="forest-bg"></div>
+
+  <!-- SVG Trees -->
+  <svg class="trees" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- Far trees (lighter) -->
+    <g opacity="0.3" fill="#2d3b2a">
+      <ellipse cx="200" cy="480" rx="70" ry="200"/>
+      <ellipse cx="350" cy="500" rx="55" ry="160"/>
+      <ellipse cx="1100" cy="470" rx="65" ry="190"/>
+      <ellipse cx="1280" cy="495" rx="50" ry="155"/>
+      <rect x="195" y="580" width="10" height="80"/>
+      <rect x="345" y="580" width="8" height="80"/>
+      <rect x="1095" y="580" width="10" height="80"/>
+      <rect x="1275" y="580" width="8" height="80"/>
+    </g>
+    <!-- Mid trees -->
+    <g opacity="0.55" fill="#1e2d1c">
+      <ellipse cx="80" cy="510" rx="80" ry="220"/>
+      <ellipse cx="500" cy="490" rx="90" ry="240"/>
+      <ellipse cx="750" cy="520" rx="60" ry="180"/>
+      <ellipse cx="950" cy="495" rx="85" ry="225"/>
+      <ellipse cx="1380" cy="510" rx="75" ry="215"/>
+      <rect x="74" y="580" width="12" height="60"/>
+      <rect x="493" y="580" width="14" height="60"/>
+      <rect x="745" y="580" width="10" height="60"/>
+      <rect x="943" y="580" width="13" height="60"/>
+      <rect x="1374" y="580" width="12" height="60"/>
+    </g>
+    <!-- Foreground trees (darkest) -->
+    <g opacity="0.85" fill="#0e1510">
+      <ellipse cx="-20" cy="560" rx="100" ry="270"/>
+      <ellipse cx="1460" cy="560" rx="100" ry="270"/>
+      <ellipse cx="300" cy="540" rx="110" ry="280"/>
+      <ellipse cx="1160" cy="540" rx="105" ry="275"/>
+      <rect x="290" y="590" width="20" height="60"/>
+      <rect x="1150" y="590" width="20" height="60"/>
+    </g>
+    <!-- Ground -->
+    <rect x="0" y="590" width="1440" height="20" fill="#0e1510" opacity="0.9"/>
+    <!-- Fireflies / spores -->
+    <g fill="rgba(168,184,154,0.6)">
+      <circle cx="420" cy="380" r="2" opacity="0.4"/>
+      <circle cx="680" cy="340" r="1.5" opacity="0.6"/>
+      <circle cx="890" cy="410" r="2" opacity="0.3"/>
+      <circle cx="1050" cy="360" r="1.5" opacity="0.5"/>
+      <circle cx="580" cy="420" r="2" opacity="0.4"/>
+    </g>
+  </svg>
+
+  <div class="hero-content">
+    <p class="eyebrow">A living archive of sound, word & image</p>
+    <h1 class="hero-title">Where <em>art</em><br>takes root</h1>
+    <p class="hero-subtitle">Music, writing & visual art — grown in solitude, shared with intention</p>
+    <div class="hero-actions">
+      <a href="#vault" class="btn-primary">Step inside</a>
+      <a href="#membership" class="btn-ghost">Become a member</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>descend</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Intro -->
+<section style="background: linear-gradient(to bottom, #0e1510, var(--moss));">
+  <div class="intro" id="about">
+    <div class="intro-text reveal">
+      <p class="section-label">The Artist</p>
+      <h2>Not content.<br><em>Creation.</em></h2>
+      <p>This is not a feed. There are no algorithms here, no view counts, no trends to chase. What you find in this vault was made because it had to be made — grown slowly, like something rooted.</p>
+      <p>Music that breathes. Prose that wanders. Images that hold still. All of it yours, when you find your way here.</p>
+      <a href="#membership" class="btn-ghost" style="margin-top: 1rem;">Find your way in</a>
+    </div>
+    <div class="intro-visual reveal" style="transition-delay: 0.2s;">
+      <span class="floating-leaf">🌿</span>
+      <span class="floating-leaf">🍃</span>
+      <span class="floating-leaf">🌱</span>
+      <div class="vinyl-wrap">
+        <div class="vinyl"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vault Preview -->
+<section class="vault-section" id="vault">
+  <div class="vault-header reveal">
+    <div>
+      <p class="section-label">The Archive</p>
+      <h2>Three doors<br>into the <em>forest</em></h2>
+    </div>
+    <a href="#membership" class="btn-ghost">Unlock all</a>
+  </div>
+
+  <div class="vault-grid reveal">
+
+    <!-- Music Card -->
+    <div class="vault-card vc-music" id="music">
+      <div class="vault-card-bg"></div>
+      <svg class="vine-deco" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 Q80 60 90 100 Q100 140 70 180" stroke="rgba(122,156,110,0.5)" stroke-width="1.5" fill="none"/>
+        <ellipse cx="85" cy="55" rx="12" ry="8" fill="rgba(122,156,110,0.3)" transform="rotate(-30 85 55)"/>
+        <ellipse cx="92" cy="110" rx="10" ry="7" fill="rgba(122,156,110,0.3)" transform="rotate(20 92 110)"/>
+        <ellipse cx="73" cy="162" rx="11" ry="7" fill="rgba(122,156,110,0.3)" transform="rotate(-15 73 162)"/>
+      </svg>
+      <div class="vault-card-content">
+        <div class="vault-card-icon">♪</div>
+        <div class="vault-card-lock">Members only ↗</div>
+        <p class="vault-card-label">Sound</p>
+        <h3 class="vault-card-title">Music<br>& Audio</h3>
+        <p class="vault-card-desc">Full catalog streaming, unreleased sessions, voice notes from the process. Lossless downloads. The sounds beneath the sounds.</p>
+      </div>
+    </div>
+
+    <!-- Writing Card -->
+    <div class="vault-card vc-writing" id="writing">
+      <div class="vault-card-bg"></div>
+      <svg class="vine-deco" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M110 5 Q85 55 95 105 Q105 145 80 190" stroke="rgba(184,147,90,0.4)" stroke-width="1.5" fill="none"/>
+        <ellipse cx="90" cy="50" rx="12" ry="7" fill="rgba(184,147,90,0.2)" transform="rotate(-25 90 50)"/>
+        <ellipse cx="97" cy="115" rx="9" ry="6" fill="rgba(184,147,90,0.2)" transform="rotate(15 97 115)"/>
+      </svg>
+      <div class="vault-card-content">
+        <div class="vault-card-icon">✦</div>
+        <div class="vault-card-lock">Members only ↗</div>
+        <p class="vault-card-label">Word</p>
+        <h3 class="vault-card-title">Writing<br>& Poetry</h3>
+        <p class="vault-card-desc">Essays, fragments, field notes. Poetry grown in the margins. The interior life of making things. One piece free each season.</p>
+      </div>
+    </div>
+
+    <!-- Art Card -->
+    <div class="vault-card vc-art" id="art">
+      <div class="vault-card-bg"></div>
+      <svg class="vine-deco" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M105 8 Q82 58 92 98 Q102 138 75 185" stroke="rgba(168,184,154,0.4)" stroke-width="1.5" fill="none"/>
+        <ellipse cx="87" cy="52" rx="11" ry="7" fill="rgba(168,184,154,0.2)" transform="rotate(-20 87 52)"/>
+        <ellipse cx="94" cy="108" rx="10" ry="6" fill="rgba(168,184,154,0.2)" transform="rotate(25 94 108)"/>
+        <ellipse cx="78" cy="168" rx="10" ry="6" fill="rgba(168,184,154,0.2)" transform="rotate(-10 78 168)"/>
+      </svg>
+      <div class="vault-card-content">
+        <div class="vault-card-icon">◎</div>
+        <div class="vault-card-lock">Members only ↗</div>
+        <p class="vault-card-label">Image</p>
+        <h3 class="vault-card-title">Visual<br>Art</h3>
+        <p class="vault-card-desc">Full-resolution works, studies, process photography. The garden of images. Prints available to members only.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Music Content Section -->
+<section style="background: linear-gradient(to bottom, #1a2410, #162010);" id="music-section">
+  <div class="content-section reveal">
+    <h2 class="content-section-title">The <em>Sound</em> Garden</h2>
+    <div class="music-grid" id="musicGrid"></div>
+  </div>
+</section>
+
+<!-- Writing Content Section -->
+<section style="background: linear-gradient(to bottom, #162010, #1a1810);" id="writing-section">
+  <div class="content-section reveal">
+    <h2 class="content-section-title">Words from the <em>Undergrowth</em></h2>
+    <div class="writing-list" id="writingList"></div>
+  </div>
+</section>
+
+<!-- Art Content Section -->
+<section style="background: linear-gradient(to bottom, #1a1810, #111a10);" id="art-section">
+  <div class="content-section reveal">
+    <h2 class="content-section-title">The <em>Visual</em> Garden</h2>
+    <div class="art-grid" id="artGrid"></div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-info">
+    <div class="lightbox-title" id="lightboxTitle"></div>
+    <div class="lightbox-desc" id="lightboxDesc"></div>
+  </div>
+</div>
+
+<!-- Admin Overlay -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-container" id="adminContainer"></div>
+</div>
+
+<!-- Audio Teaser -->
+<section style="padding: 6rem 3rem; background: #111a10; text-align: center;">
+  <p class="section-label reveal" style="margin-bottom: 2rem;">A taste of what lives inside</p>
+  <div class="audio-preview reveal">
+    <div class="audio-track-name">Soil & Silence</div>
+    <div class="audio-artist">Preview · 1:24</div>
+    <div class="audio-waveform" id="waveform">
+    </div>
+    <div class="audio-controls">
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <div class="audio-bar-bg">
+        <div class="audio-bar-fill" id="audioBarFill"></div>
+      </div>
+      <span class="audio-time" id="audioTime">0:35 / 1:24</span>
+    </div>
+  </div>
+  <p style="font-size:0.75rem; color: var(--sage); margin-top: 1.5rem; letter-spacing: 0.1em;">The full catalog awaits members</p>
+</section>
+
+<!-- Membership -->
+<section style="background: linear-gradient(to bottom, #111a10, var(--moss));" id="membership">
+  <div class="membership reveal">
+    <p class="section-label">Access</p>
+    <h2>Tend the <em>garden</em><br>with me</h2>
+    <p>This vault grows with time. Every season brings new music, new writing, new work. Members keep the roots alive — and get access to everything.</p>
+
+    <div class="tiers">
+      <div class="tier tier-free reveal">
+        <p class="tier-label">Wanderer</p>
+        <div class="tier-price">Free</div>
+        <p class="tier-period">always</p>
+        <ul class="tier-features">
+          <li>One piece of writing each season</li>
+          <li>Selected single tracks</li>
+          <li>Preview of the art gallery</li>
+          <li class="locked">Full music catalog</li>
+          <li class="locked">All writings & essays</li>
+          <li class="locked">High-res art & prints</li>
+        </ul>
+        <a href="#" class="btn-ghost" style="font-size:0.7rem; padding: 0.8rem 1.5rem;">Enter freely</a>
+        <div class="tier-glow"></div>
+      </div>
+
+      <div class="tier tier-paid reveal" style="transition-delay:0.15s;">
+        <p class="tier-label">Member</p>
+        <div class="tier-price"><span>$</span>8</div>
+        <p class="tier-period">per month · cancel anytime</p>
+        <ul class="tier-features">
+          <li>Full music catalog, streaming & download</li>
+          <li>All writings, essays & poetry</li>
+          <li>Complete art gallery, full resolution</li>
+          <li>Process work & voice notes</li>
+          <li>Members-only print access</li>
+          <li>Direct email when new work arrives</li>
+        </ul>
+        <a href="#" class="btn-primary" style="font-size:0.7rem; padding: 0.8rem 1.5rem;">Take root</a>
+        <div class="tier-glow"></div>
+      </div>
+    </div>
+
+    <p style="font-size:0.75rem; color: var(--sage); letter-spacing: 0.1em; line-height: 2;">No platform takes a cut. Every dollar goes directly to sustaining the work.<br>Powered by Ghost + Stripe.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">the vault</div>
+  <div class="footer-note">
+    Made with intention, not for attention.<br>
+    All rights reserved · Your Name · 2025
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// CURSOR
+// ============================================================
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx - 18 + 'px';
+  ring.style.top = ry - 18 + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+function setupCursorHovers() {
+  document.querySelectorAll('a, button, .vault-card, .art-item, .writing-item, .music-play-btn, .admin-tab').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+      ring.style.borderColor = 'rgba(168,184,154,0.6)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(168,184,154,0.4)';
+    });
+  });
+}
+setupCursorHovers();
+
+// ============================================================
+// PARTICLES
+// ============================================================
+const pc = document.getElementById('particles');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 4 + 2;
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%;
+    animation-duration:${12+Math.random()*20}s;
+    animation-delay:${-Math.random()*20}s;
+  `;
+  pc.appendChild(p);
+}
+
+// ============================================================
+// HERO WAVEFORM (demo)
+// ============================================================
+const waveform = document.getElementById('waveform');
+const heights = [20,35,55,40,65,80,45,70,90,60,50,75,85,55,40,65,35,80,60,45,70,55,85,40,60,75,50,65,35,45];
+heights.forEach((h, i) => {
+  const bar = document.createElement('div');
+  bar.className = 'wave-bar' + (i < 10 ? ' active' : '');
+  bar.style.height = h + '%';
+  bar.style.animationDelay = (i * 0.05) + 's';
+  waveform.appendChild(bar);
+});
+
+let playing = false;
+let progress = 35;
+let interval;
+
+function togglePlay() {
+  playing = !playing;
+  const btn = document.getElementById('playBtn');
+  if (playing) {
+    btn.textContent = '⏸';
+    interval = setInterval(() => {
+      progress = Math.min(progress + 0.2, 100);
+      document.getElementById('audioBarFill').style.width = progress + '%';
+      const elapsed = Math.floor(progress * 84 / 100);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      document.getElementById('audioTime').textContent = `${m}:${s.toString().padStart(2,'0')} / 1:24`;
+      if (progress >= 100) { clearInterval(interval); playing = false; btn.textContent = '▶'; progress = 0; }
+    }, 100);
+    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'running');
+  } else {
+    btn.textContent = '▶';
+    clearInterval(interval);
+    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
+  }
+}
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ============================================================
+// VAULT CARD CLICKS -> scroll to sections
+// ============================================================
+document.querySelector('.vc-music').addEventListener('click', () => {
+  document.getElementById('music-section').scrollIntoView({ behavior: 'smooth' });
+});
+document.querySelector('.vc-writing').addEventListener('click', () => {
+  document.getElementById('writing-section').scrollIntoView({ behavior: 'smooth' });
+});
+document.querySelector('.vc-art').addEventListener('click', () => {
+  document.getElementById('art-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ============================================================
+// DATA LAYER — localStorage
+// ============================================================
+function getData(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; }
+  catch { return []; }
+}
+function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// ============================================================
+// RENDER: MUSIC
+// ============================================================
+let currentAudio = null;
+let currentAudioId = null;
+let musicInterval = null;
+
+function renderMusic() {
+  const grid = document.getElementById('musicGrid');
+  const items = getData('vault_music');
+  if (!items.length) {
+    grid.innerHTML = '<div class="content-empty">The sound garden is being tended\u2026</div>';
+    return;
+  }
+  grid.innerHTML = items.map((t, i) => `
+    <div class="music-card">
+      <div class="music-card-cover">
+        ${t.cover ? `<img src="${t.cover}" alt="${t.title}">` : '\u266B'}
+      </div>
+      <div class="music-card-info">
+        <div class="music-card-title">${t.title}</div>
+        <div class="music-card-artist">${t.artist || ''}</div>
+        ${t.description ? `<div class="music-card-desc">${t.description}</div>` : ''}
+        ${t.audio ? `
+          <div class="music-player-mini">
+            <button class="music-play-btn" data-idx="${i}" onclick="playTrack(${i})">▶</button>
+            <div class="music-progress-wrap" onclick="seekTrack(event, ${i})">
+              <div class="music-progress-fill" id="mpf-${i}"></div>
+            </div>
+            <span class="music-time" id="mt-${i}">0:00</span>
+          </div>` : ''}
+      </div>
+    </div>
+  `).join('');
+  setupCursorHovers();
+}
+
+function playTrack(idx) {
+  const items = getData('vault_music');
+  const track = items[idx];
+  if (!track || !track.audio) return;
+
+  // If same track, toggle pause/play
+  if (currentAudioId === idx && currentAudio) {
+    if (currentAudio.paused) {
+      currentAudio.play();
+      document.querySelector(`[data-idx="${idx}"]`).textContent = '⏸';
+    } else {
+      currentAudio.pause();
+      document.querySelector(`[data-idx="${idx}"]`).textContent = '▶';
+    }
+    return;
+  }
+
+  // Stop previous
+  if (currentAudio) {
+    currentAudio.pause();
+    clearInterval(musicInterval);
+    const prevBtn = document.querySelector(`[data-idx="${currentAudioId}"]`);
+    if (prevBtn) prevBtn.textContent = '▶';
+    const prevFill = document.getElementById(`mpf-${currentAudioId}`);
+    if (prevFill) prevFill.style.width = '0%';
+  }
+
+  currentAudio = new Audio(track.audio);
+  currentAudioId = idx;
+  currentAudio.play();
+  document.querySelector(`[data-idx="${idx}"]`).textContent = '⏸';
+
+  musicInterval = setInterval(() => {
+    if (!currentAudio || currentAudio.paused) return;
+    const pct = (currentAudio.currentTime / currentAudio.duration) * 100 || 0;
+    const fill = document.getElementById(`mpf-${idx}`);
+    if (fill) fill.style.width = pct + '%';
+    const t = document.getElementById(`mt-${idx}`);
+    if (t) {
+      const cur = formatTime(currentAudio.currentTime);
+      const dur = formatTime(currentAudio.duration);
+      t.textContent = `${cur} / ${dur}`;
+    }
+  }, 200);
+
+  currentAudio.addEventListener('ended', () => {
+    clearInterval(musicInterval);
+    document.querySelector(`[data-idx="${idx}"]`).textContent = '▶';
+    const fill = document.getElementById(`mpf-${idx}`);
+    if (fill) fill.style.width = '0%';
+    currentAudio = null;
+    currentAudioId = null;
+  });
+}
+
+function seekTrack(e, idx) {
+  if (currentAudioId !== idx || !currentAudio) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  currentAudio.currentTime = pct * currentAudio.duration;
+}
+
+function formatTime(s) {
+  if (isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+// ============================================================
+// RENDER: WRITING
+// ============================================================
+function renderWriting() {
+  const list = document.getElementById('writingList');
+  const items = getData('vault_writing');
+  if (!items.length) {
+    list.innerHTML = '<div class="content-empty">The undergrowth is still growing\u2026</div>';
+    return;
+  }
+  list.innerHTML = items.map((w, i) => `
+    <div class="writing-item" onclick="this.classList.toggle('expanded')">
+      <div class="writing-item-header">
+        <div class="writing-item-title">${w.title}</div>
+        <div class="writing-item-date">${w.date || ''}</div>
+      </div>
+      <div class="writing-item-preview">${w.body.replace(/\n/g, '<br>')}</div>
+      <div class="writing-expand-hint">click to ${'{'}expand / collapse${'}'}</div>
+    </div>
+  `).join('');
+  setupCursorHovers();
+}
+
+// ============================================================
+// RENDER: ART
+// ============================================================
+let artItems = [];
+let lightboxIdx = 0;
+
+function renderArt() {
+  const grid = document.getElementById('artGrid');
+  artItems = getData('vault_art');
+  if (!artItems.length) {
+    grid.innerHTML = '<div class="content-empty">The visual garden is being planted\u2026</div>';
+    return;
+  }
+  grid.innerHTML = artItems.map((a, i) => `
+    <div class="art-item" onclick="openLightbox(${i})">
+      <img src="${a.image}" alt="${a.title}">
+      <div class="art-item-overlay">
+        <div class="art-item-title">${a.title}</div>
+        ${a.description ? `<div class="art-item-desc">${a.description}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+  setupCursorHovers();
+}
+
+// ============================================================
+// LIGHTBOX
+// ============================================================
+function openLightbox(idx) {
+  lightboxIdx = idx;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+function lightboxNav(dir) {
+  lightboxIdx = (lightboxIdx + dir + artItems.length) % artItems.length;
+  updateLightbox();
+}
+
+function updateLightbox() {
+  const item = artItems[lightboxIdx];
+  if (!item) return;
+  document.getElementById('lightboxImg').src = item.image;
+  document.getElementById('lightboxTitle').textContent = item.title;
+  document.getElementById('lightboxDesc').textContent = item.description || '';
+}
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+  if (e.key === 'ArrowRight') lightboxNav(1);
+});
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+let adminLoggedIn = false;
+let adminTab = 'music';
+let editingItem = null; // { type, index }
+
+// Trigger: triple-click footer logo OR Ctrl+Shift+A
+let footerClicks = 0;
+let footerTimer = null;
+document.querySelector('.footer-logo').addEventListener('click', () => {
+  footerClicks++;
+  clearTimeout(footerTimer);
+  footerTimer = setTimeout(() => { footerClicks = 0; }, 600);
+  if (footerClicks >= 3) { footerClicks = 0; openAdmin(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdmin(); }
+});
+
+function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('active');
+  if (!adminLoggedIn) {
+    renderAdminGate();
+  } else {
+    renderAdminDashboard();
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('active');
+  editingItem = null;
+}
+
+// Simple hash for password
+async function hashPass(p) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function renderAdminGate() {
+  const c = document.getElementById('adminContainer');
+  const hasPass = localStorage.getItem('vault_admin_pass');
+  c.innerHTML = `
+    <div class="admin-gate">
+      <h2>${hasPass ? 'Enter the vault' : 'Set your password'}</h2>
+      <p>${hasPass ? 'Enter your admin password to manage content.' : 'First time here. Choose a password to protect your admin panel.'}</p>
+      <input type="password" id="adminPassInput" placeholder="${hasPass ? 'Password' : 'Choose a password'}" onkeydown="if(event.key==='Enter')adminAuth()">
+      <button class="btn-primary" onclick="adminAuth()" style="cursor:pointer;">${hasPass ? 'Enter' : 'Set password'}</button>
+      <div class="admin-gate-error" id="adminError">Wrong password</div>
+      <button class="admin-close" onclick="closeAdmin()" style="margin-top:1rem;">Cancel</button>
+    </div>
+  `;
+  document.getElementById('adminPassInput').focus();
+}
+
+async function adminAuth() {
+  const input = document.getElementById('adminPassInput').value;
+  if (!input) return;
+  const hashed = await hashPass(input);
+  const stored = localStorage.getItem('vault_admin_pass');
+
+  if (!stored) {
+    // First time — set password
+    localStorage.setItem('vault_admin_pass', hashed);
+    adminLoggedIn = true;
+    renderAdminDashboard();
+  } else if (hashed === stored) {
+    adminLoggedIn = true;
+    renderAdminDashboard();
+  } else {
+    document.getElementById('adminError').style.display = 'block';
+  }
+}
+
+function renderAdminDashboard() {
+  editingItem = null;
+  const c = document.getElementById('adminContainer');
+  c.innerHTML = `
+    <div class="admin-header">
+      <div class="admin-title">Vault Admin</div>
+      <button class="admin-close" onclick="closeAdmin()">Close</button>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab ${adminTab==='music'?'active':''}" onclick="adminTab='music';renderAdminDashboard()">Music</div>
+      <div class="admin-tab ${adminTab==='writing'?'active':''}" onclick="adminTab='writing';renderAdminDashboard()">Writing</div>
+      <div class="admin-tab ${adminTab==='art'?'active':''}" onclick="adminTab='art';renderAdminDashboard()">Art</div>
+    </div>
+    <div id="adminPanelContent"></div>
+  `;
+
+  const panel = document.getElementById('adminPanelContent');
+
+  if (adminTab === 'music') renderAdminMusic(panel);
+  else if (adminTab === 'writing') renderAdminWriting(panel);
+  else if (adminTab === 'art') renderAdminArt(panel);
+
+  setupCursorHovers();
+}
+
+// ---------- ADMIN: MUSIC ----------
+function renderAdminMusic(panel) {
+  const items = getData('vault_music');
+  const isEditing = editingItem && editingItem.type === 'music';
+  const ed = isEditing ? items[editingItem.index] : {};
+
+  panel.innerHTML = `
+    <div class="admin-form">
+      <div class="admin-form-title">${isEditing ? 'Edit track' : 'Add new track'}</div>
+      <div class="admin-field">
+        <label>Title</label>
+        <input type="text" id="af-music-title" value="${isEditing ? ed.title : ''}">
+      </div>
+      <div class="admin-field">
+        <label>Artist</label>
+        <input type="text" id="af-music-artist" value="${isEditing ? (ed.artist||'') : ''}">
+      </div>
+      <div class="admin-field">
+        <label>Description</label>
+        <textarea id="af-music-desc">${isEditing ? (ed.description||'') : ''}</textarea>
+      </div>
+      <div class="admin-field">
+        <label>Audio file (MP3/WAV)</label>
+        <input type="file" id="af-music-audio" accept="audio/*">
+        ${isEditing && ed.audio ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current audio loaded. Upload new to replace.</p>' : ''}
+      </div>
+      <div class="admin-field">
+        <label>Cover image (optional)</label>
+        <input type="file" id="af-music-cover" accept="image/*">
+        ${isEditing && ed.cover ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current cover loaded.</p>' : ''}
+      </div>
+      <button class="admin-btn admin-btn-save" onclick="saveMusic()">${isEditing ? 'Update' : 'Add track'}</button>
+      ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+    </div>
+    <div class="admin-items-list">
+      ${items.map((t, i) => `
+        <div class="admin-item-row">
+          <div class="admin-item-name">${t.title}</div>
+          <div class="admin-item-actions">
+            <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'music',index:${i}};renderAdminDashboard()">Edit</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_music',${i})">Delete</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function saveMusic() {
+  const title = document.getElementById('af-music-title').value.trim();
+  if (!title) return;
+
+  const items = getData('vault_music');
+  const isEditing = editingItem && editingItem.type === 'music';
+  const existing = isEditing ? items[editingItem.index] : {};
+
+  const audioFile = document.getElementById('af-music-audio').files[0];
+  const coverFile = document.getElementById('af-music-cover').files[0];
+
+  const entry = {
+    title,
+    artist: document.getElementById('af-music-artist').value.trim(),
+    description: document.getElementById('af-music-desc').value.trim(),
+    audio: audioFile ? await fileToDataURL(audioFile) : (existing.audio || ''),
+    cover: coverFile ? await fileToDataURL(coverFile) : (existing.cover || ''),
+  };
+
+  if (isEditing) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
+  }
+
+  try {
+    setData('vault_music', items);
+  } catch (e) {
+    alert('Storage limit reached. Try using smaller audio files or fewer items.');
+    return;
+  }
+
+  editingItem = null;
+  renderAdminDashboard();
+  renderMusic();
+}
+
+// ---------- ADMIN: WRITING ----------
+function renderAdminWriting(panel) {
+  const items = getData('vault_writing');
+  const isEditing = editingItem && editingItem.type === 'writing';
+  const ed = isEditing ? items[editingItem.index] : {};
+
+  panel.innerHTML = `
+    <div class="admin-form">
+      <div class="admin-form-title">${isEditing ? 'Edit piece' : 'Add new writing'}</div>
+      <div class="admin-field">
+        <label>Title</label>
+        <input type="text" id="af-writing-title" value="${isEditing ? ed.title : ''}">
+      </div>
+      <div class="admin-field">
+        <label>Date</label>
+        <input type="text" id="af-writing-date" value="${isEditing ? (ed.date||'') : ''}" placeholder="e.g. March 2026">
+      </div>
+      <div class="admin-field">
+        <label>Body</label>
+        <textarea id="af-writing-body" style="min-height:200px;">${isEditing ? ed.body : ''}</textarea>
+      </div>
+      <button class="admin-btn admin-btn-save" onclick="saveWriting()">${isEditing ? 'Update' : 'Add piece'}</button>
+      ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+    </div>
+    <div class="admin-items-list">
+      ${items.map((w, i) => `
+        <div class="admin-item-row">
+          <div class="admin-item-name">${w.title}</div>
+          <div class="admin-item-actions">
+            <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'writing',index:${i}};renderAdminDashboard()">Edit</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_writing',${i})">Delete</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function saveWriting() {
+  const title = document.getElementById('af-writing-title').value.trim();
+  const body = document.getElementById('af-writing-body').value.trim();
+  if (!title || !body) return;
+
+  const items = getData('vault_writing');
+  const isEditing = editingItem && editingItem.type === 'writing';
+
+  const entry = {
+    title,
+    date: document.getElementById('af-writing-date').value.trim(),
+    body,
+  };
+
+  if (isEditing) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
+  }
+
+  setData('vault_writing', items);
+  editingItem = null;
+  renderAdminDashboard();
+  renderWriting();
+}
+
+// ---------- ADMIN: ART ----------
+function renderAdminArt(panel) {
+  const items = getData('vault_art');
+  const isEditing = editingItem && editingItem.type === 'art';
+  const ed = isEditing ? items[editingItem.index] : {};
+
+  panel.innerHTML = `
+    <div class="admin-form">
+      <div class="admin-form-title">${isEditing ? 'Edit artwork' : 'Add new artwork'}</div>
+      <div class="admin-field">
+        <label>Title</label>
+        <input type="text" id="af-art-title" value="${isEditing ? ed.title : ''}">
+      </div>
+      <div class="admin-field">
+        <label>Description</label>
+        <textarea id="af-art-desc">${isEditing ? (ed.description||'') : ''}</textarea>
+      </div>
+      <div class="admin-field">
+        <label>Image</label>
+        <input type="file" id="af-art-image" accept="image/*">
+        ${isEditing && ed.image ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current image loaded.</p>' : ''}
+      </div>
+      <button class="admin-btn admin-btn-save" onclick="saveArt()">${isEditing ? 'Update' : 'Add artwork'}</button>
+      ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+    </div>
+    <div class="admin-items-list">
+      ${items.map((a, i) => `
+        <div class="admin-item-row">
+          <div class="admin-item-name">${a.title}</div>
+          <div class="admin-item-actions">
+            <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'art',index:${i}};renderAdminDashboard()">Edit</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_art',${i})">Delete</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function saveArt() {
+  const title = document.getElementById('af-art-title').value.trim();
+  if (!title) return;
+
+  const items = getData('vault_art');
+  const isEditing = editingItem && editingItem.type === 'art';
+  const existing = isEditing ? items[editingItem.index] : {};
+
+  const imageFile = document.getElementById('af-art-image').files[0];
+
+  if (!isEditing && !imageFile) return; // require image for new entries
+
+  const entry = {
+    title,
+    description: document.getElementById('af-art-desc').value.trim(),
+    image: imageFile ? await fileToDataURL(imageFile) : (existing.image || ''),
+  };
+
+  if (isEditing) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
+  }
+
+  try {
+    setData('vault_art', items);
+  } catch (e) {
+    alert('Storage limit reached. Try using smaller images or fewer items.');
+    return;
+  }
+
+  editingItem = null;
+  renderAdminDashboard();
+  renderArt();
+}
+
+// ---------- SHARED ADMIN HELPERS ----------
+function deleteItem(key, idx) {
+  if (!confirm('Delete this item?')) return;
+  const items = getData(key);
+  items.splice(idx, 1);
+  setData(key, items);
+  editingItem = null;
+  renderAdminDashboard();
+  renderMusic();
+  renderWriting();
+  renderArt();
+}
+
+function fileToDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ============================================================
+// INIT — render all sections
+// ============================================================
+renderMusic();
+renderWriting();
+renderArt();
+</script>
+</body>
+</html>
