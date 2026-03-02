@@ -1206,6 +1206,12 @@
     margin-left: 0.5rem;
   }
   .admin-btn-delete:hover { background: rgba(140,50,50,0.7); }
+  .admin-upload-status {
+    font-size: 0.75rem;
+    color: var(--sage);
+    margin-top: 0.5rem;
+    min-height: 1rem;
+  }
   .admin-btn-edit {
     background: rgba(74,103,65,0.3);
     color: var(--lichen);
@@ -1947,15 +1953,12 @@ function closeAdmin() {
   editingItem = null;
 }
 
-// Simple hash for password
-async function hashPass(p) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-function renderAdminGate() {
+async function renderAdminGate() {
   const c = document.getElementById('adminContainer');
-  const hasPass = localStorage.getItem('vault_admin_pass');
+  // Check server for password status
+  const statusResp = await fetch('admin-api.php?action=status');
+  const status = await statusResp.json();
+  const hasPass = status.hasPass;
   c.innerHTML = `
     <div class="admin-gate">
       <h2>${hasPass ? 'Enter the sanctuary' : 'Set your password'}</h2>
@@ -1972,15 +1975,16 @@ function renderAdminGate() {
 async function adminAuth() {
   const input = document.getElementById('adminPassInput').value;
   if (!input) return;
-  const hashed = await hashPass(input);
-  const stored = localStorage.getItem('vault_admin_pass');
 
-  if (!stored) {
-    // First time — set password
-    localStorage.setItem('vault_admin_pass', hashed);
-    adminLoggedIn = true;
-    renderAdminDashboard();
-  } else if (hashed === stored) {
+  const statusResp = await fetch('admin-api.php?action=status');
+  const status = await statusResp.json();
+
+  const fd = new FormData();
+  fd.append('password', input);
+  fd.append('action', status.hasPass ? 'login' : 'setup');
+
+  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+  if (resp.ok) {
     adminLoggedIn = true;
     renderAdminDashboard();
   } else {
@@ -1988,7 +1992,7 @@ async function adminAuth() {
   }
 }
 
-function renderAdminDashboard() {
+async function renderAdminDashboard() {
   editingItem = null;
   const c = document.getElementById('adminContainer');
   c.innerHTML = `
@@ -2006,16 +2010,16 @@ function renderAdminDashboard() {
 
   const panel = document.getElementById('adminPanelContent');
 
-  if (adminTab === 'music') renderAdminMusic(panel);
-  else if (adminTab === 'writing') renderAdminWriting(panel);
-  else if (adminTab === 'art') renderAdminArt(panel);
+  if (adminTab === 'music') await renderAdminMusic(panel);
+  else if (adminTab === 'writing') await renderAdminWriting(panel);
+  else if (adminTab === 'art') await renderAdminArt(panel);
 
   setupCursorHovers();
 }
 
 // ---------- ADMIN: MUSIC ----------
-function renderAdminMusic(panel) {
-  const items = getData('vault_music');
+async function renderAdminMusic(panel) {
+  const items = await adminGetData('music');
   const isEditing = editingItem && editingItem.type === 'music';
   const ed = isEditing ? items[editingItem.index] : {};
 
@@ -2046,6 +2050,7 @@ function renderAdminMusic(panel) {
       </div>
       <button class="admin-btn admin-btn-save" onclick="saveMusic()">${isEditing ? 'Update' : 'Add track'}</button>
       ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+      <div class="admin-upload-status" id="uploadStatus"></div>
     </div>
     <div class="admin-items-list">
       ${items.map((t, i) => `
@@ -2053,7 +2058,7 @@ function renderAdminMusic(panel) {
           <div class="admin-item-name">${t.title}</div>
           <div class="admin-item-actions">
             <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'music',index:${i}};renderAdminDashboard()">Edit</button>
-            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_music',${i})">Delete</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('music',${i})">Delete</button>
           </div>
         </div>
       `).join('')}
@@ -2065,31 +2070,23 @@ async function saveMusic() {
   const title = document.getElementById('af-music-title').value.trim();
   if (!title) return;
 
-  const items = getData('vault_music');
   const isEditing = editingItem && editingItem.type === 'music';
-  const existing = isEditing ? items[editingItem.index] : {};
+  const fd = new FormData();
+  fd.append('action', 'save_music');
+  fd.append('title', title);
+  fd.append('artist', document.getElementById('af-music-artist').value.trim());
+  fd.append('description', document.getElementById('af-music-desc').value.trim());
+  if (isEditing) fd.append('index', editingItem.index);
 
   const audioFile = document.getElementById('af-music-audio').files[0];
   const coverFile = document.getElementById('af-music-cover').files[0];
+  if (audioFile) fd.append('audio', audioFile);
+  if (coverFile) fd.append('cover', coverFile);
 
-  const entry = {
-    title,
-    artist: document.getElementById('af-music-artist').value.trim(),
-    description: document.getElementById('af-music-desc').value.trim(),
-    audio: audioFile ? await fileToDataURL(audioFile) : (existing.audio || ''),
-    cover: coverFile ? await fileToDataURL(coverFile) : (existing.cover || ''),
-  };
-
-  if (isEditing) {
-    items[editingItem.index] = entry;
-  } else {
-    items.push(entry);
-  }
-
-  try {
-    setData('vault_music', items);
-  } catch (e) {
-    alert('Storage limit reached. Try using smaller audio files or fewer items.');
+  showUploadStatus('Uploading…');
+  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+  if (!resp.ok) {
+    showUploadStatus('Upload failed. Try again.');
     return;
   }
 
@@ -2099,8 +2096,8 @@ async function saveMusic() {
 }
 
 // ---------- ADMIN: WRITING ----------
-function renderAdminWriting(panel) {
-  const items = getData('vault_writing');
+async function renderAdminWriting(panel) {
+  const items = await adminGetData('writing');
   const isEditing = editingItem && editingItem.type === 'writing';
   const ed = isEditing ? items[editingItem.index] : {};
 
@@ -2121,6 +2118,7 @@ function renderAdminWriting(panel) {
       </div>
       <button class="admin-btn admin-btn-save" onclick="saveWriting()">${isEditing ? 'Update' : 'Add piece'}</button>
       ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+      <div class="admin-upload-status" id="uploadStatus"></div>
     </div>
     <div class="admin-items-list">
       ${items.map((w, i) => `
@@ -2128,7 +2126,7 @@ function renderAdminWriting(panel) {
           <div class="admin-item-name">${w.title}</div>
           <div class="admin-item-actions">
             <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'writing',index:${i}};renderAdminDashboard()">Edit</button>
-            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_writing',${i})">Delete</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('writing',${i})">Delete</button>
           </div>
         </div>
       `).join('')}
@@ -2136,35 +2134,34 @@ function renderAdminWriting(panel) {
   `;
 }
 
-function saveWriting() {
+async function saveWriting() {
   const title = document.getElementById('af-writing-title').value.trim();
   const body = document.getElementById('af-writing-body').value.trim();
   if (!title || !body) return;
 
-  const items = getData('vault_writing');
   const isEditing = editingItem && editingItem.type === 'writing';
+  const fd = new FormData();
+  fd.append('action', 'save_writing');
+  fd.append('title', title);
+  fd.append('date', document.getElementById('af-writing-date').value.trim());
+  fd.append('body', body);
+  if (isEditing) fd.append('index', editingItem.index);
 
-  const entry = {
-    title,
-    date: document.getElementById('af-writing-date').value.trim(),
-    body,
-  };
-
-  if (isEditing) {
-    items[editingItem.index] = entry;
-  } else {
-    items.push(entry);
+  showUploadStatus('Saving…');
+  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+  if (!resp.ok) {
+    showUploadStatus('Save failed. Try again.');
+    return;
   }
 
-  setData('vault_writing', items);
   editingItem = null;
   renderAdminDashboard();
   renderWriting();
 }
 
 // ---------- ADMIN: ART ----------
-function renderAdminArt(panel) {
-  const items = getData('vault_art');
+async function renderAdminArt(panel) {
+  const items = await adminGetData('art');
   const isEditing = editingItem && editingItem.type === 'art';
   const ed = isEditing ? items[editingItem.index] : {};
 
@@ -2186,6 +2183,7 @@ function renderAdminArt(panel) {
       </div>
       <button class="admin-btn admin-btn-save" onclick="saveArt()">${isEditing ? 'Update' : 'Add artwork'}</button>
       ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
+      <div class="admin-upload-status" id="uploadStatus"></div>
     </div>
     <div class="admin-items-list">
       ${items.map((a, i) => `
@@ -2193,7 +2191,7 @@ function renderAdminArt(panel) {
           <div class="admin-item-name">${a.title}</div>
           <div class="admin-item-actions">
             <button class="admin-btn admin-btn-edit" onclick="editingItem={type:'art',index:${i}};renderAdminDashboard()">Edit</button>
-            <button class="admin-btn admin-btn-delete" onclick="deleteItem('vault_art',${i})">Delete</button>
+            <button class="admin-btn admin-btn-delete" onclick="deleteItem('art',${i})">Delete</button>
           </div>
         </div>
       `).join('')}
@@ -2205,33 +2203,21 @@ async function saveArt() {
   const title = document.getElementById('af-art-title').value.trim();
   if (!title) return;
 
-  const items = getData('vault_art');
   const isEditing = editingItem && editingItem.type === 'art';
-  const existing = isEditing ? items[editingItem.index] : {};
-
   const mediaFile = document.getElementById('af-art-image').files[0];
+  if (!isEditing && !mediaFile) return;
 
-  if (!isEditing && !mediaFile) return; // require media for new entries
+  const fd = new FormData();
+  fd.append('action', 'save_art');
+  fd.append('title', title);
+  fd.append('description', document.getElementById('af-art-desc').value.trim());
+  if (isEditing) fd.append('index', editingItem.index);
+  if (mediaFile) fd.append('media', mediaFile);
 
-  const mediaType = mediaFile ? (mediaFile.type.startsWith('video/') ? 'video' : 'image') : (existing.type || 'image');
-
-  const entry = {
-    title,
-    description: document.getElementById('af-art-desc').value.trim(),
-    image: mediaFile ? await fileToDataURL(mediaFile) : (existing.image || ''),
-    type: mediaType,
-  };
-
-  if (isEditing) {
-    items[editingItem.index] = entry;
-  } else {
-    items.push(entry);
-  }
-
-  try {
-    setData('vault_art', items);
-  } catch (e) {
-    alert('Storage limit reached. Try using smaller images or fewer items.');
+  showUploadStatus('Uploading…');
+  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+  if (!resp.ok) {
+    showUploadStatus('Upload failed. Try again.');
     return;
   }
 
@@ -2241,11 +2227,21 @@ async function saveArt() {
 }
 
 // ---------- SHARED ADMIN HELPERS ----------
-function deleteItem(key, idx) {
+async function adminGetData(key) {
+  try {
+    const resp = await fetch('admin-api.php?action=get&key=' + key);
+    if (!resp.ok) return [];
+    return await resp.json();
+  } catch { return []; }
+}
+
+async function deleteItem(key, idx) {
   if (!confirm('Delete this item?')) return;
-  const items = getData(key);
-  items.splice(idx, 1);
-  setData(key, items);
+  const fd = new FormData();
+  fd.append('action', 'delete');
+  fd.append('key', key);
+  fd.append('index', idx);
+  await fetch('admin-api.php', { method: 'POST', body: fd });
   editingItem = null;
   renderAdminDashboard();
   renderMusic();
@@ -2253,13 +2249,9 @@ function deleteItem(key, idx) {
   renderArt();
 }
 
-function fileToDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+function showUploadStatus(msg) {
+  const el = document.getElementById('uploadStatus');
+  if (el) el.textContent = msg;
 }
 
 // ============================================================
