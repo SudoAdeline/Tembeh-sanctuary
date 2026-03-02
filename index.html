@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Vault — A Living Archive</title>
+<title>Tembeh — Of Beautiful Hope</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1281,14 +1281,14 @@
 
 <!-- Navigation -->
 <nav>
-  <a href="#" class="nav-logo">the vault</a>
+  <a href="#" class="nav-logo">tembeh</a>
   <ul class="nav-links">
     <li><a href="#music">Music</a></li>
     <li><a href="#writing">Writing</a></li>
     <li><a href="#art">Art</a></li>
     <li><a href="#about">About</a></li>
   </ul>
-  <a href="#membership" class="nav-cta">Enter the Vault</a>
+  <a href="#membership" class="nav-cta">Enter the World</a>
 </nav>
 
 <!-- Hero -->
@@ -1343,8 +1343,8 @@
   </svg>
 
   <div class="hero-content">
-    <p class="eyebrow">A living archive of sound, word & image</p>
-    <h1 class="hero-title">Where <em>art</em><br>takes root</h1>
+    <p class="eyebrow">The world of Tembeh</p>
+    <h1 class="hero-title">Of <em>Beautiful</em><br>Hope</h1>
     <p class="hero-subtitle">Music, writing & visual art — grown in solitude, shared with intention</p>
     <div class="hero-actions">
       <a href="#vault" class="btn-primary">Step inside</a>
@@ -1364,7 +1364,7 @@
     <div class="intro-text reveal">
       <p class="section-label">The Artist</p>
       <h2>Not content.<br><em>Creation.</em></h2>
-      <p>This is not a feed. There are no algorithms here, no view counts, no trends to chase. What you find in this vault was made because it had to be made — grown slowly, like something rooted.</p>
+      <p>This is not a feed. There are no algorithms here, no view counts, no trends to chase. What you find in Tembeh's world was made because it had to be made — grown slowly, like something rooted.</p>
       <p>Music that breathes. Prose that wanders. Images that hold still. All of it yours, when you find your way here.</p>
       <a href="#membership" class="btn-ghost" style="margin-top: 1rem;">Find your way in</a>
     </div>
@@ -1513,7 +1513,7 @@
   <div class="membership reveal">
     <p class="section-label">Access</p>
     <h2>Tend the <em>garden</em><br>with me</h2>
-    <p>This vault grows with time. Every season brings new music, new writing, new work. Members keep the roots alive — and get access to everything.</p>
+    <p>This world grows with time. Every season brings new music, new writing, new work. Members keep the roots alive — and get access to everything.</p>
 
     <div class="tiers">
       <div class="tier tier-free reveal">
@@ -1555,7 +1555,7 @@
 
 <!-- Footer -->
 <footer>
-  <div class="footer-logo">the vault</div>
+  <div class="footer-logo">tembeh</div>
   <div class="footer-note">
     Made with intention, not for attention.<br>
     All rights reserved · Tembeh · 2025
@@ -1958,7 +1958,7 @@ function renderAdminGate() {
   const hasPass = localStorage.getItem('vault_admin_pass');
   c.innerHTML = `
     <div class="admin-gate">
-      <h2>${hasPass ? 'Enter the vault' : 'Set your password'}</h2>
+      <h2>${hasPass ? 'Enter the sanctuary' : 'Set your password'}</h2>
       <p>${hasPass ? 'Enter your admin password to manage content.' : 'First time here. Choose a password to protect your admin panel.'}</p>
       <input type="password" id="adminPassInput" placeholder="${hasPass ? 'Password' : 'Choose a password'}" onkeydown="if(event.key==='Enter')adminAuth()">
       <button class="btn-primary" onclick="adminAuth()" style="cursor:pointer;">${hasPass ? 'Enter' : 'Set password'}</button>
@@ -1993,7 +1993,7 @@ function renderAdminDashboard() {
   const c = document.getElementById('adminContainer');
   c.innerHTML = `
     <div class="admin-header">
-      <div class="admin-title">Vault Admin</div>
+      <div class="admin-title">Tembeh Admin</div>
       <button class="admin-close" onclick="closeAdmin()">Close</button>
     </div>
     <div class="admin-tabs">
