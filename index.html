@@ -942,13 +942,41 @@
     position: relative;
     background: rgba(20,28,19,0.6);
   }
-  .art-item img {
+  .art-item img, .art-item video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
   }
-  .art-item:hover img { transform: scale(1.06); }
+  .art-item:hover img, .art-item:hover video { transform: scale(1.06); }
+  .art-item .video-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(10,15,9,0.7);
+    border: 1px solid rgba(122,156,110,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .art-item .video-indicator::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 14px;
+    border-color: transparent transparent transparent var(--morning);
+    margin-left: 3px;
+  }
+  .art-item:hover .video-indicator { opacity: 0.6; }
   .art-item-overlay {
     position: absolute;
     inset: 0;
@@ -997,11 +1025,13 @@
     transition: color 0.3s;
   }
   .lightbox-close:hover { color: var(--morning); }
-  .lightbox-img {
+  .lightbox-img, .lightbox-video {
     max-width: 85vw;
     max-height: 75vh;
     object-fit: contain;
   }
+  .lightbox-video { outline: none; }
+  .lightbox-media-hidden { display: none !important; }
   .lightbox-info {
     text-align: center;
     margin-top: 1.5rem;
@@ -1447,6 +1477,7 @@
   <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
   <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
   <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <video class="lightbox-video lightbox-media-hidden" id="lightboxVideo" controls></video>
   <div class="lightbox-info">
     <div class="lightbox-title" id="lightboxTitle"></div>
     <div class="lightbox-desc" id="lightboxDesc"></div>
@@ -1653,13 +1684,28 @@ document.querySelector('.vc-art').addEventListener('click', () => {
 });
 
 // ============================================================
-// DATA LAYER — localStorage
+// DATA LAYER
 // ============================================================
+// localStorage (used by admin panel for local editing)
 function getData(key) {
   try { return JSON.parse(localStorage.getItem(key)) || []; }
   catch { return []; }
 }
 function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// Fetch from JSON files (used by public-facing render)
+const dataFileMap = {
+  vault_music: 'data/music.json',
+  vault_writing: 'data/writing.json',
+  vault_art: 'data/art.json',
+};
+async function fetchData(key) {
+  try {
+    const resp = await fetch(dataFileMap[key] + '?t=' + Date.now());
+    if (!resp.ok) return [];
+    return await resp.json();
+  } catch { return []; }
+}
 
 // ============================================================
 // RENDER: MUSIC
@@ -1667,10 +1713,12 @@ function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 let currentAudio = null;
 let currentAudioId = null;
 let musicInterval = null;
+let musicItems = [];
 
-function renderMusic() {
+async function renderMusic() {
   const grid = document.getElementById('musicGrid');
-  const items = getData('vault_music');
+  const items = await fetchData('vault_music');
+  musicItems = items;
   if (!items.length) {
     grid.innerHTML = '<div class="content-empty">The sound garden is being tended\u2026</div>';
     return;
@@ -1699,8 +1747,7 @@ function renderMusic() {
 }
 
 function playTrack(idx) {
-  const items = getData('vault_music');
-  const track = items[idx];
+  const track = musicItems[idx];
   if (!track || !track.audio) return;
 
   // If same track, toggle pause/play
@@ -1770,9 +1817,9 @@ function formatTime(s) {
 // ============================================================
 // RENDER: WRITING
 // ============================================================
-function renderWriting() {
+async function renderWriting() {
   const list = document.getElementById('writingList');
-  const items = getData('vault_writing');
+  const items = await fetchData('vault_writing');
   if (!items.length) {
     list.innerHTML = '<div class="content-empty">The undergrowth is still growing\u2026</div>';
     return;
@@ -1796,16 +1843,18 @@ function renderWriting() {
 let artItems = [];
 let lightboxIdx = 0;
 
-function renderArt() {
+async function renderArt() {
   const grid = document.getElementById('artGrid');
-  artItems = getData('vault_art');
+  artItems = await fetchData('vault_art');
   if (!artItems.length) {
     grid.innerHTML = '<div class="content-empty">The visual garden is being planted\u2026</div>';
     return;
   }
   grid.innerHTML = artItems.map((a, i) => `
     <div class="art-item" onclick="openLightbox(${i})">
-      <img src="${a.image}" alt="${a.title}">
+      ${a.type === 'video'
+        ? `<video src="${a.image}" muted preload="metadata"></video><div class="video-indicator"></div>`
+        : `<img src="${a.image}" alt="${a.title}">`}
       <div class="art-item-overlay">
         <div class="art-item-title">${a.title}</div>
         ${a.description ? `<div class="art-item-desc">${a.description}</div>` : ''}
@@ -1825,6 +1874,8 @@ function openLightbox(idx) {
 }
 
 function closeLightbox() {
+  const vid = document.getElementById('lightboxVideo');
+  vid.pause();
   document.getElementById('lightbox').classList.remove('active');
 }
 
@@ -1836,7 +1887,20 @@ function lightboxNav(dir) {
 function updateLightbox() {
   const item = artItems[lightboxIdx];
   if (!item) return;
-  document.getElementById('lightboxImg').src = item.image;
+  const img = document.getElementById('lightboxImg');
+  const vid = document.getElementById('lightboxVideo');
+  if (item.type === 'video') {
+    img.classList.add('lightbox-media-hidden');
+    vid.classList.remove('lightbox-media-hidden');
+    vid.src = item.image;
+    vid.load();
+  } else {
+    vid.classList.add('lightbox-media-hidden');
+    vid.pause();
+    vid.removeAttribute('src');
+    img.classList.remove('lightbox-media-hidden');
+    img.src = item.image;
+  }
   document.getElementById('lightboxTitle').textContent = item.title;
   document.getElementById('lightboxDesc').textContent = item.description || '';
 }
@@ -2116,9 +2180,9 @@ function renderAdminArt(panel) {
         <textarea id="af-art-desc">${isEditing ? (ed.description||'') : ''}</textarea>
       </div>
       <div class="admin-field">
-        <label>Image</label>
-        <input type="file" id="af-art-image" accept="image/*">
-        ${isEditing && ed.image ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current image loaded.</p>' : ''}
+        <label>Image or Video</label>
+        <input type="file" id="af-art-image" accept="image/*,video/*">
+        ${isEditing && ed.image ? `<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current ${ed.type === 'video' ? 'video' : 'image'} loaded.</p>` : ''}
       </div>
       <button class="admin-btn admin-btn-save" onclick="saveArt()">${isEditing ? 'Update' : 'Add artwork'}</button>
       ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
@@ -2145,14 +2209,17 @@ async function saveArt() {
   const isEditing = editingItem && editingItem.type === 'art';
   const existing = isEditing ? items[editingItem.index] : {};
 
-  const imageFile = document.getElementById('af-art-image').files[0];
+  const mediaFile = document.getElementById('af-art-image').files[0];
 
-  if (!isEditing && !imageFile) return; // require image for new entries
+  if (!isEditing && !mediaFile) return; // require media for new entries
+
+  const mediaType = mediaFile ? (mediaFile.type.startsWith('video/') ? 'video' : 'image') : (existing.type || 'image');
 
   const entry = {
     title,
     description: document.getElementById('af-art-desc').value.trim(),
-    image: imageFile ? await fileToDataURL(imageFile) : (existing.image || ''),
+    image: mediaFile ? await fileToDataURL(mediaFile) : (existing.image || ''),
+    type: mediaType,
   };
 
   if (isEditing) {
