@@ -1,61 +1,73 @@
-# The Vault — A Living Archive
+# Of Beautiful Hope — The World of Tembeh
 
-A self-contained, single-page creative archive by **Tembeh** — music, writing, and visual art grown in solitude, shared with intention. Built as a pure HTML/CSS/JS experience with no frameworks or dependencies.
+A creative sanctuary by **Tembeh** — music, writing, and visual art grown in solitude, shared with intention. Hosted on Hostinger with a built-in admin panel for managing content directly from the browser.
 
 ## Features
 
-### Public-Facing Sections
+### Public Site
 - **Hero** — Animated forest scene with floating particles, SVG tree silhouettes, and custom cursor
 - **Music** — Track grid with a fully functional audio player (play/pause, seek, progress tracking)
-- **Writing** — Expandable list of written pieces — click to read, click again to collapse
-- **Art Gallery** — Image grid with hover overlays and a full-screen lightbox (keyboard navigation with arrow keys and Escape)
-- **Membership Tiers** — Wanderer (free) and Member ($8/month) with feature comparison
-- **Audio Teaser** — Animated waveform preview player
+- **Writing** — Expandable written pieces — click to read, click again to collapse
+- **Art Gallery** — Image and video grid with hover overlays and a full-screen lightbox (keyboard navigation)
+- **Video Support** — Upload and display videos alongside images in the gallery
+- **Membership Tiers** — Wanderer (free) and Member with feature comparison
 
-### Admin Panel (Password-Protected)
-Only the site owner can manage content. Access via:
-- **Triple-click** the footer logo ("the vault")
-- **Ctrl+Shift+A** keyboard shortcut
+### Admin Panel
+Access via **triple-click** on the footer logo or **Ctrl+Shift+A**.
 
-Admin capabilities:
-- **Music** — Add tracks with audio files (MP3/WAV), cover images, title, artist, and description
-- **Writing** — Add pieces with title, date, and full body text
-- **Art** — Upload images with title and description
-- Full **edit** and **delete** support for all content types
-- Password is hashed (SHA-256) and stored securely in localStorage
+- Upload music tracks (MP3/WAV) with cover art, title, artist, and description
+- Upload images and videos to the art gallery
+- Add writing pieces with title, date, and body text
+- Edit and delete any content
+- Files are uploaded directly to the server — no size limits from localStorage
+- Password protected with bcrypt hashing (server-side)
 
-### Design
-- Forest/botanical theme with CSS custom properties
-- Custom cursor with trailing ring
-- Scroll-triggered reveal animations
-- Responsive layout (mobile-friendly)
-- Google Fonts: Cormorant Garamond + Karla
+## Project Structure
+
+```
+index.html          — The full site (HTML/CSS/JS)
+admin-api.php       — PHP backend for uploads and content management
+data/
+  music.json        — Music track metadata
+  writing.json      — Writing pieces
+  art.json          — Art gallery metadata
+media/
+  music/            — Audio files and cover images
+  art/              — Images and videos
+.htaccess           — Security and upload config
+.user.ini           — PHP upload limits (512MB)
+```
+
+## Deployment (Hostinger)
+
+1. Upload all files to `public_html` on Hostinger
+2. Visit your domain
+3. Open the admin panel (Ctrl+Shift+A)
+4. Set your password on first visit
+5. Start uploading content
+
+## Adding Content
+
+All content is managed through the admin panel in the browser:
+
+1. Open the admin panel on your live site
+2. Choose a tab (Music, Writing, or Art)
+3. Fill in the details and select your file
+4. Click save — the file uploads to your server and appears on the site immediately
 
 ## Tech Stack
 
-- **HTML5** — Single file, no build step
-- **CSS3** — Custom properties, grid, animations, blend modes
-- **Vanilla JS** — Web Audio API, IntersectionObserver, localStorage, Web Crypto API
-- **No dependencies** — Fully self-contained
-
-## Storage
-
-All content is stored in the browser's `localStorage` as base64 data URLs. Keep in mind:
-- ~5–10 MB storage limit depending on the browser
-- Content persists per-browser — clearing browser data removes it
-- Best with compressed audio and optimized images
-
-## Getting Started
-
-1. Open `vault (1).html` in any modern browser
-2. Triple-click the footer logo or press `Ctrl+Shift+A` to open the admin panel
-3. Set your password on first visit
-4. Start adding your music, writing, and art
+- **HTML/CSS/JS** — Single-page, no frameworks
+- **PHP** — Backend API for file uploads and JSON management
+- **Hostinger** — Shared hosting with PHP support
+- Forest/botanical theme with custom cursor, scroll animations, and responsive layout
 
 ## Artist
 
 Created by **Tembeh** — a multidisciplinary artist working across sound, word, and image.
 
+**ofbeautifulhope.com**
+
 ## License
 
-All rights reserved. &copy; Tembeh
+All rights reserved. Tembeh
