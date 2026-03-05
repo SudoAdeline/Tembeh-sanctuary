@@ -801,23 +801,7 @@
   }
   .music-card:hover { transform: translateY(-3px); border-color: rgba(122,156,110,0.3); }
   .music-card-cover {
-    width: 100%;
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, #1a2a18, #0e1a0c);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: var(--fern);
-    overflow: hidden;
-    position: relative;
-  }
-  .music-card-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    inset: 0;
+    display: none;
   }
   .music-card-info { padding: 1.2rem; }
   .music-card-title {
@@ -2220,11 +2204,6 @@ async function renderAdminMusic(panel) {
         <input type="file" id="af-music-audio" accept="audio/*">
         ${isEditing && ed.audio ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current audio loaded. Upload new to replace.</p>' : ''}
       </div>
-      <div class="admin-field">
-        <label>Cover image (optional)</label>
-        <input type="file" id="af-music-cover" accept="image/*">
-        ${isEditing && ed.cover ? '<p style="font-size:0.7rem;color:var(--sage);margin-top:0.3rem;">Current cover loaded.</p>' : ''}
-      </div>
       <button class="admin-btn admin-btn-save" onclick="saveMusic()">${isEditing ? 'Update' : 'Add track'}</button>
       ${isEditing ? '<button class="admin-btn admin-btn-edit" onclick="editingItem=null;renderAdminDashboard()">Cancel</button>' : ''}
       <div class="admin-upload-status" id="uploadStatus"></div>
@@ -2257,10 +2236,7 @@ async function saveMusic() {
   if (isEditing) fd.append('index', editingItem.index);
 
   const audioFile = document.getElementById('af-music-audio').files[0];
-  let coverFile = document.getElementById('af-music-cover').files[0];
-  if (coverFile) coverFile = await compressImage(coverFile);
   if (audioFile) fd.append('audio', audioFile);
-  if (coverFile) fd.append('cover', coverFile);
 
   // Build entry for localStorage
   const items = getData('vault_music');
