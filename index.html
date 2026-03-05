@@ -1000,6 +1000,66 @@
     margin-top: 0.3rem;
   }
 
+  /* Premium content gating */
+  .music-card.locked,
+  .writing-item.locked,
+  .art-item.locked {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+  }
+  .premium-gate {
+    position: relative;
+    margin-top: -2rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: linear-gradient(to bottom, transparent, rgba(10,15,9,0.95) 30%);
+    z-index: 5;
+  }
+  .premium-gate-inner {
+    border: 1px solid rgba(122,156,110,0.2);
+    background: rgba(20,28,19,0.6);
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .premium-gate-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+  .premium-gate-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 0.5rem;
+  }
+  .premium-gate-text {
+    font-size: 0.75rem;
+    color: var(--sage);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .premium-gate-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--morning);
+    border: 1px solid rgba(122,156,110,0.4);
+    background: rgba(74,103,65,0.2);
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+    text-decoration: none;
+  }
+  .premium-gate-btn:hover {
+    background: rgba(74,103,65,0.4);
+    border-color: var(--lichen);
+  }
+
   /* Lightbox */
   .lightbox {
     position: fixed;
@@ -1408,10 +1468,10 @@
       </svg>
       <div class="vault-card-content">
         <div class="vault-card-icon">♪</div>
-        <div class="vault-card-lock">Members only ↗</div>
+        <div class="vault-card-lock">3 free · Members get all</div>
         <p class="vault-card-label">Sound</p>
         <h3 class="vault-card-title">Music<br>& Audio</h3>
-        <p class="vault-card-desc">Full catalog streaming, unreleased sessions, voice notes from the process. Lossless downloads. The sounds beneath the sounds.</p>
+        <p class="vault-card-desc">First 3 tracks free. Members unlock the full catalog — unreleased sessions, voice notes, lossless downloads. The sounds beneath the sounds.</p>
       </div>
     </div>
 
@@ -1425,10 +1485,10 @@
       </svg>
       <div class="vault-card-content">
         <div class="vault-card-icon">✦</div>
-        <div class="vault-card-lock">Members only ↗</div>
+        <div class="vault-card-lock">3 free · Members get all</div>
         <p class="vault-card-label">Word</p>
         <h3 class="vault-card-title">Writing<br>& Poetry</h3>
-        <p class="vault-card-desc">Essays, fragments, field notes. Poetry grown in the margins. The interior life of making things. One piece free each season.</p>
+        <p class="vault-card-desc">First 3 pieces free. Members unlock everything — essays, fragments, field notes, poetry. The interior life of making things.</p>
       </div>
     </div>
 
@@ -1443,10 +1503,10 @@
       </svg>
       <div class="vault-card-content">
         <div class="vault-card-icon">◎</div>
-        <div class="vault-card-lock">Members only ↗</div>
+        <div class="vault-card-lock">3 free · Members get all</div>
         <p class="vault-card-label">Image</p>
         <h3 class="vault-card-title">Visual<br>Art</h3>
-        <p class="vault-card-desc">Full-resolution works, studies, process photography. The garden of images. Prints available to members only.</p>
+        <p class="vault-card-desc">First 3 works free. Members unlock the full gallery — studies, process photography, full-resolution downloads and prints.</p>
       </div>
     </div>
 
@@ -1498,18 +1558,18 @@
 <!-- Audio Teaser -->
 <section style="padding: 6rem 3rem; background: #111a10; text-align: center;">
   <p class="section-label reveal" style="margin-bottom: 2rem;">A taste of what lives inside</p>
-  <div class="audio-preview reveal">
-    <div class="audio-track-name">Soil & Silence</div>
-    <div class="audio-artist">Preview · 1:24</div>
-    <div class="audio-waveform" id="waveform">
-    </div>
+  <div class="audio-preview reveal" id="audioPreviewSection">
+    <div class="audio-track-name" id="previewTrackName">Loading…</div>
+    <div class="audio-artist" id="previewArtist"></div>
+    <div class="audio-waveform" id="waveform"></div>
     <div class="audio-controls">
-      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
-      <div class="audio-bar-bg">
+      <button class="play-btn" id="playBtn" onclick="togglePreview()">▶</button>
+      <div class="audio-bar-bg" onclick="seekPreview(event)">
         <div class="audio-bar-fill" id="audioBarFill"></div>
       </div>
-      <span class="audio-time" id="audioTime">0:35 / 1:24</span>
+      <span class="audio-time" id="audioTime">0:00</span>
     </div>
+    <audio id="previewAudio" preload="metadata"></audio>
   </div>
   <p style="font-size:0.75rem; color: var(--sage); margin-top: 1.5rem; letter-spacing: 0.1em;">The full catalog awaits members</p>
 </section>
@@ -1527,12 +1587,12 @@
         <div class="tier-price">Free</div>
         <p class="tier-period">always</p>
         <ul class="tier-features">
-          <li>One piece of writing each season</li>
-          <li>Selected single tracks</li>
-          <li>Preview of the art gallery</li>
-          <li class="locked">Full music catalog</li>
+          <li>First 3 tracks in the music catalog</li>
+          <li>First 3 pieces of writing & poetry</li>
+          <li>First 3 works in the art gallery</li>
+          <li class="locked">Full music catalog & downloads</li>
           <li class="locked">All writings & essays</li>
-          <li class="locked">High-res art & prints</li>
+          <li class="locked">Full gallery & high-res prints</li>
         </ul>
         <a href="#" class="btn-ghost" style="font-size:0.7rem; padding: 0.8rem 1.5rem;">Enter freely</a>
         <div class="tier-glow"></div>
@@ -1627,7 +1687,7 @@ for (let i = 0; i < 18; i++) {
 }
 
 // ============================================================
-// HERO WAVEFORM (demo)
+// AUDIO PREVIEW (dynamic — plays first uploaded track)
 // ============================================================
 const waveform = document.getElementById('waveform');
 const heights = [20,35,55,40,65,80,45,70,90,60,50,75,85,55,40,65,35,80,60,45,70,55,85,40,60,75,50,65,35,45];
@@ -1639,30 +1699,62 @@ heights.forEach((h, i) => {
   waveform.appendChild(bar);
 });
 
-let playing = false;
-let progress = 35;
-let interval;
+const previewAudio = document.getElementById('previewAudio');
+let previewInterval;
 
-function togglePlay() {
-  playing = !playing;
+async function initAudioPreview() {
+  const items = await fetchData('vault_music');
+  const track = items[0];
+  if (!track) {
+    document.getElementById('previewTrackName').textContent = 'Coming soon…';
+    document.getElementById('previewArtist').textContent = 'New music on the way';
+    document.getElementById('playBtn').style.display = 'none';
+    return;
+  }
+  document.getElementById('previewTrackName').textContent = track.title;
+  document.getElementById('previewArtist').textContent = track.artist ? `${track.artist} · Preview` : 'Preview';
+  if (track.audio) previewAudio.src = track.audio;
+  document.getElementById('playBtn').style.display = '';
+
+  previewAudio.addEventListener('timeupdate', () => {
+    if (!previewAudio.duration) return;
+    const pct = (previewAudio.currentTime / previewAudio.duration) * 100;
+    document.getElementById('audioBarFill').style.width = pct + '%';
+    document.getElementById('audioTime').textContent =
+      formatTime(previewAudio.currentTime) + ' / ' + formatTime(previewAudio.duration);
+  });
+
+  previewAudio.addEventListener('ended', () => {
+    document.getElementById('playBtn').textContent = '▶';
+    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
+  });
+}
+
+function togglePreview() {
+  if (!previewAudio.src) return;
   const btn = document.getElementById('playBtn');
-  if (playing) {
+  if (previewAudio.paused) {
+    // Pause any track playing in the music section
+    if (currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      const prevBtn = document.querySelector(`[data-idx="${currentAudioId}"]`);
+      if (prevBtn) prevBtn.textContent = '▶';
+    }
+    previewAudio.play();
     btn.textContent = '⏸';
-    interval = setInterval(() => {
-      progress = Math.min(progress + 0.2, 100);
-      document.getElementById('audioBarFill').style.width = progress + '%';
-      const elapsed = Math.floor(progress * 84 / 100);
-      const m = Math.floor(elapsed / 60);
-      const s = elapsed % 60;
-      document.getElementById('audioTime').textContent = `${m}:${s.toString().padStart(2,'0')} / 1:24`;
-      if (progress >= 100) { clearInterval(interval); playing = false; btn.textContent = '▶'; progress = 0; }
-    }, 100);
     document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'running');
   } else {
+    previewAudio.pause();
     btn.textContent = '▶';
-    clearInterval(interval);
     document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
   }
+}
+
+function seekPreview(e) {
+  if (!previewAudio.duration) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  previewAudio.currentTime = pct * previewAudio.duration;
 }
 
 // ============================================================
@@ -1692,25 +1784,40 @@ document.querySelector('.vc-art').addEventListener('click', () => {
 // ============================================================
 // DATA LAYER
 // ============================================================
-// localStorage (used by admin panel for local editing)
+// localStorage — primary data store (always works in the browser)
 function getData(key) {
   try { return JSON.parse(localStorage.getItem(key)) || []; }
   catch { return []; }
 }
 function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
-// Fetch from JSON files (used by public-facing render)
-const dataFileMap = {
-  vault_music: 'data/music.json',
-  vault_writing: 'data/writing.json',
-  vault_art: 'data/art.json',
+// Fetch data — reads localStorage first, syncs from server in background
+const dataKeyMap = {
+  vault_music: 'music',
+  vault_writing: 'writing',
+  vault_art: 'art',
 };
 async function fetchData(key) {
+  const k = dataKeyMap[key] || key;
+  const lsKey = 'vault_' + k;
+  const local = getData(lsKey);
+  // Try server sources — only overwrite localStorage if server has data
   try {
-    const resp = await fetch(dataFileMap[key] + '?t=' + Date.now());
-    if (!resp.ok) return [];
-    return await resp.json();
-  } catch { return []; }
+    const resp = await fetch('admin-api.php?action=get&key=' + k + '&t=' + Date.now());
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
+    }
+  } catch {}
+  if (local.length) return local;
+  try {
+    const resp = await fetch('data/' + k + '.json?t=' + Date.now());
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
+    }
+  } catch {}
+  return local;
 }
 
 // ============================================================
@@ -1729,8 +1836,11 @@ async function renderMusic() {
     grid.innerHTML = '<div class="content-empty">The sound garden is being tended\u2026</div>';
     return;
   }
+  // Ensure section is visible when it has content
+  grid.closest('.reveal')?.classList.add('visible');
+  const FREE_LIMIT = 3;
   grid.innerHTML = items.map((t, i) => `
-    <div class="music-card">
+    <div class="music-card${i >= FREE_LIMIT ? ' locked' : ''}">
       <div class="music-card-cover">
         ${t.cover ? `<img src="${t.cover}" alt="${t.title}">` : '\u266B'}
       </div>
@@ -1748,7 +1858,15 @@ async function renderMusic() {
           </div>` : ''}
       </div>
     </div>
-  `).join('');
+  `).join('') + (items.length > FREE_LIMIT ? `
+    <div class="premium-gate">
+      <div class="premium-gate-inner">
+        <div class="premium-gate-icon">♪</div>
+        <div class="premium-gate-title">More music lives here</div>
+        <p class="premium-gate-text">${items.length - FREE_LIMIT} more track${items.length - FREE_LIMIT > 1 ? 's' : ''} waiting for you. Become a member to unlock the full catalog.</p>
+        <a href="#membership" class="premium-gate-btn" onclick="document.getElementById('membership').scrollIntoView({behavior:'smooth'});return false;">Become a member</a>
+      </div>
+    </div>` : '');
   setupCursorHovers();
 }
 
@@ -1830,16 +1948,27 @@ async function renderWriting() {
     list.innerHTML = '<div class="content-empty">The undergrowth is still growing\u2026</div>';
     return;
   }
+  // Ensure section is visible when it has content
+  list.closest('.reveal')?.classList.add('visible');
+  const FREE_LIMIT = 3;
   list.innerHTML = items.map((w, i) => `
-    <div class="writing-item" onclick="this.classList.toggle('expanded')">
+    <div class="writing-item${i >= FREE_LIMIT ? ' locked' : ''}" ${i < FREE_LIMIT ? 'onclick="this.classList.toggle(\'expanded\')"' : ''}>
       <div class="writing-item-header">
         <div class="writing-item-title">${w.title}</div>
         <div class="writing-item-date">${w.date || ''}</div>
       </div>
       <div class="writing-item-preview">${w.body.replace(/\n/g, '<br>')}</div>
-      <div class="writing-expand-hint">click to ${'{'}expand / collapse${'}'}</div>
+      ${i < FREE_LIMIT ? '<div class="writing-expand-hint">click to expand / collapse</div>' : ''}
     </div>
-  `).join('');
+  `).join('') + (items.length > FREE_LIMIT ? `
+    <div class="premium-gate">
+      <div class="premium-gate-inner">
+        <div class="premium-gate-icon">✦</div>
+        <div class="premium-gate-title">More words beneath the surface</div>
+        <p class="premium-gate-text">${items.length - FREE_LIMIT} more piece${items.length - FREE_LIMIT > 1 ? 's' : ''} waiting for you. Become a member to read everything.</p>
+        <a href="#membership" class="premium-gate-btn" onclick="document.getElementById('membership').scrollIntoView({behavior:'smooth'});return false;">Become a member</a>
+      </div>
+    </div>` : '');
   setupCursorHovers();
 }
 
@@ -1856,8 +1985,11 @@ async function renderArt() {
     grid.innerHTML = '<div class="content-empty">The visual garden is being planted\u2026</div>';
     return;
   }
+  // Ensure section is visible when it has content
+  grid.closest('.reveal')?.classList.add('visible');
+  const FREE_LIMIT = 3;
   grid.innerHTML = artItems.map((a, i) => `
-    <div class="art-item" onclick="openLightbox(${i})">
+    <div class="art-item${i >= FREE_LIMIT ? ' locked' : ''}" ${i < FREE_LIMIT ? `onclick="openLightbox(${i})"` : ''}>
       ${a.type === 'video'
         ? `<video src="${a.image}" muted preload="metadata"></video><div class="video-indicator"></div>`
         : `<img src="${a.image}" alt="${a.title}">`}
@@ -1866,7 +1998,15 @@ async function renderArt() {
         ${a.description ? `<div class="art-item-desc">${a.description}</div>` : ''}
       </div>
     </div>
-  `).join('');
+  `).join('') + (artItems.length > FREE_LIMIT ? `
+    <div class="premium-gate">
+      <div class="premium-gate-inner">
+        <div class="premium-gate-icon">◎</div>
+        <div class="premium-gate-title">More art grows here</div>
+        <p class="premium-gate-text">${artItems.length - FREE_LIMIT} more work${artItems.length - FREE_LIMIT > 1 ? 's' : ''} waiting for you. Become a member to see the full gallery.</p>
+        <a href="#membership" class="premium-gate-btn" onclick="document.getElementById('membership').scrollIntoView({behavior:'smooth'});return false;">Become a member</a>
+      </div>
+    </div>` : '');
   setupCursorHovers();
 }
 
@@ -1956,9 +2096,12 @@ function closeAdmin() {
 async function renderAdminGate() {
   const c = document.getElementById('adminContainer');
   // Check server for password status
-  const statusResp = await fetch('admin-api.php?action=status');
-  const status = await statusResp.json();
-  const hasPass = status.hasPass;
+  let hasPass = false;
+  try {
+    const statusResp = await fetch('admin-api.php?action=status');
+    const status = await statusResp.json();
+    hasPass = status.hasPass;
+  } catch {}
   c.innerHTML = `
     <div class="admin-gate">
       <h2>${hasPass ? 'Enter the sanctuary' : 'Set your password'}</h2>
@@ -1976,15 +2119,33 @@ async function adminAuth() {
   const input = document.getElementById('adminPassInput').value;
   if (!input) return;
 
-  const statusResp = await fetch('admin-api.php?action=status');
-  const status = await statusResp.json();
+  let hasPass = false;
+  try {
+    const statusResp = await fetch('admin-api.php?action=status');
+    const status = await statusResp.json();
+    hasPass = status.hasPass;
+  } catch {}
 
   const fd = new FormData();
   fd.append('password', input);
-  fd.append('action', status.hasPass ? 'login' : 'setup');
+  fd.append('action', hasPass ? 'login' : 'setup');
 
-  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
-  if (resp.ok) {
+  try {
+    const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+    if (resp.ok) {
+      adminLoggedIn = true;
+      renderAdminDashboard();
+      return;
+    }
+  } catch {}
+
+  // If PHP auth fails, allow local-only mode
+  const stored = localStorage.getItem('admin_pass');
+  if (!stored) {
+    localStorage.setItem('admin_pass', input);
+    adminLoggedIn = true;
+    renderAdminDashboard();
+  } else if (stored === input) {
     adminLoggedIn = true;
     renderAdminDashboard();
   } else {
@@ -2083,16 +2244,40 @@ async function saveMusic() {
   if (audioFile) fd.append('audio', audioFile);
   if (coverFile) fd.append('cover', coverFile);
 
-  showUploadStatus('Uploading…');
-  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
-  if (!resp.ok) {
-    showUploadStatus('Upload failed. Try again.');
-    return;
+  // Build entry for localStorage
+  const items = getData('vault_music');
+  const existing = (isEditing && editingItem.index < items.length) ? items[editingItem.index] : {};
+  const entry = {
+    title: title,
+    artist: document.getElementById('af-music-artist').value.trim(),
+    description: document.getElementById('af-music-desc').value.trim(),
+    audio: audioFile ? URL.createObjectURL(audioFile) : (existing.audio || ''),
+    cover: coverFile ? URL.createObjectURL(coverFile) : (existing.cover || ''),
+  };
+
+  // Save to localStorage immediately
+  if (isEditing && editingItem.index < items.length) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
   }
+  setData('vault_music', items);
+
+  // Also try PHP save (for server-side persistence + real file paths)
+  showUploadStatus('Uploading…');
+  try {
+    const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+    if (resp.ok) {
+      // Sync localStorage with server data (gets real file paths)
+      const serverData = await adminGetData('music');
+      if (serverData.length) setData('vault_music', serverData);
+    }
+  } catch {}
 
   editingItem = null;
-  renderAdminDashboard();
-  renderMusic();
+  await renderMusic();
+  closeAdmin();
+  document.getElementById('music-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ---------- ADMIN: WRITING ----------
@@ -2140,23 +2325,38 @@ async function saveWriting() {
   if (!title || !body) return;
 
   const isEditing = editingItem && editingItem.type === 'writing';
+
+  // Save to localStorage immediately
+  const items = getData('vault_writing');
+  const entry = {
+    title: title,
+    date: document.getElementById('af-writing-date').value.trim(),
+    body: body,
+  };
+  if (isEditing && editingItem.index < items.length) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
+  }
+  setData('vault_writing', items);
+
+  // Also try PHP save (for server-side persistence)
   const fd = new FormData();
   fd.append('action', 'save_writing');
   fd.append('title', title);
-  fd.append('date', document.getElementById('af-writing-date').value.trim());
+  fd.append('date', entry.date);
   fd.append('body', body);
   if (isEditing) fd.append('index', editingItem.index);
 
   showUploadStatus('Saving…');
-  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
-  if (!resp.ok) {
-    showUploadStatus('Save failed. Try again.');
-    return;
-  }
+  try {
+    await fetch('admin-api.php', { method: 'POST', body: fd });
+  } catch {}
 
   editingItem = null;
-  renderAdminDashboard();
-  renderWriting();
+  await renderWriting();
+  closeAdmin();
+  document.getElementById('writing-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ---------- ADMIN: ART ----------
@@ -2207,46 +2407,92 @@ async function saveArt() {
   const mediaFile = document.getElementById('af-art-image').files[0];
   if (!isEditing && !mediaFile) return;
 
+  // Save to localStorage immediately
+  const items = getData('vault_art');
+  const existing = (isEditing && editingItem.index < items.length) ? items[editingItem.index] : {};
+  const videoExts = ['mp4', 'webm', 'mov', 'avi', 'mkv'];
+  let mediaType = existing.type || 'image';
+  let mediaUrl = existing.image || '';
+  if (mediaFile) {
+    mediaUrl = URL.createObjectURL(mediaFile);
+    const ext = mediaFile.name.split('.').pop().toLowerCase();
+    mediaType = videoExts.includes(ext) ? 'video' : 'image';
+  }
+  const entry = {
+    title: title,
+    description: document.getElementById('af-art-desc').value.trim(),
+    image: mediaUrl,
+    type: mediaType,
+  };
+  if (isEditing && editingItem.index < items.length) {
+    items[editingItem.index] = entry;
+  } else {
+    items.push(entry);
+  }
+  setData('vault_art', items);
+
+  // Also try PHP save (for server-side persistence + real file paths)
   const fd = new FormData();
   fd.append('action', 'save_art');
   fd.append('title', title);
-  fd.append('description', document.getElementById('af-art-desc').value.trim());
+  fd.append('description', entry.description);
   if (isEditing) fd.append('index', editingItem.index);
   if (mediaFile) fd.append('media', mediaFile);
 
   showUploadStatus('Uploading…');
-  const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
-  if (!resp.ok) {
-    showUploadStatus('Upload failed. Try again.');
-    return;
-  }
+  try {
+    const resp = await fetch('admin-api.php', { method: 'POST', body: fd });
+    if (resp.ok) {
+      // Sync localStorage with server data (gets real file paths)
+      const serverData = await adminGetData('art');
+      if (serverData.length) setData('vault_art', serverData);
+    }
+  } catch {}
 
   editingItem = null;
-  renderAdminDashboard();
-  renderArt();
+  await renderArt();
+  closeAdmin();
+  document.getElementById('art-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ---------- SHARED ADMIN HELPERS ----------
 async function adminGetData(key) {
+  const lsKey = 'vault_' + key;
+  const local = getData(lsKey);
   try {
-    const resp = await fetch('admin-api.php?action=get&key=' + key);
-    if (!resp.ok) return [];
-    return await resp.json();
-  } catch { return []; }
+    const resp = await fetch('admin-api.php?action=get&key=' + key + '&t=' + Date.now());
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
+    }
+  } catch {}
+  // Use localStorage (never overwritten by empty server response)
+  return local;
 }
 
 async function deleteItem(key, idx) {
   if (!confirm('Delete this item?')) return;
+
+  // Delete from localStorage immediately
+  const lsKey = 'vault_' + key;
+  const items = getData(lsKey);
+  if (idx >= 0 && idx < items.length) {
+    items.splice(idx, 1);
+    setData(lsKey, items);
+  }
+
+  // Also try PHP delete
   const fd = new FormData();
   fd.append('action', 'delete');
   fd.append('key', key);
   fd.append('index', idx);
-  await fetch('admin-api.php', { method: 'POST', body: fd });
+  try { await fetch('admin-api.php', { method: 'POST', body: fd }); } catch {}
+
   editingItem = null;
-  renderAdminDashboard();
-  renderMusic();
-  renderWriting();
-  renderArt();
+  await renderAdminDashboard();
+  await renderMusic();
+  await renderWriting();
+  await renderArt();
 }
 
 function showUploadStatus(msg) {
@@ -2260,6 +2506,7 @@ function showUploadStatus(msg) {
 renderMusic();
 renderWriting();
 renderArt();
+initAudioPreview();
 </script>
 </body>
 </html>

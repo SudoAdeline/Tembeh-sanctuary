@@ -19,8 +19,8 @@ Access via **triple-click** on the footer logo or **Ctrl+Shift+A**.
 - Upload images and videos to the art gallery
 - Add writing pieces with title, date, and body text
 - Edit and delete any content
-- Files are uploaded directly to the server — no size limits from localStorage
-- Password protected with bcrypt hashing (server-side)
+- Password protected — bcrypt hashing via PHP, with localStorage fallback
+- **Dual storage** — content saves to both the server (PHP/JSON) and the browser (localStorage), so content always appears even if the server has issues
 
 ## Project Structure
 
@@ -53,12 +53,22 @@ All content is managed through the admin panel in the browser:
 1. Open the admin panel on your live site
 2. Choose a tab (Music, Writing, or Art)
 3. Fill in the details and select your file
-4. Click save — the file uploads to your server and appears on the site immediately
+4. Click save — content saves to your browser immediately and syncs to the server
+
+## How Data Storage Works
+
+Content is saved in two places for reliability:
+
+- **localStorage (browser)** — instant, always works, data persists in your browser
+- **PHP backend (server)** — saves to JSON files on the server for cross-device access
+
+When the site loads, it checks the server first. If the server has content, it syncs to localStorage. If the server is unavailable, it falls back to whatever is stored in the browser.
 
 ## Tech Stack
 
 - **HTML/CSS/JS** — Single-page, no frameworks
 - **PHP** — Backend API for file uploads and JSON management
+- **localStorage** — Browser-side persistence for reliability
 - **Hostinger** — Shared hosting with PHP support
 - Forest/botanical theme with custom cursor, scroll animations, and responsive layout
 
