@@ -1,3 +1,13 @@
 .DS_Store
 *.swp
 *.swo
+
+# Never overwrite uploaded content on deploy
+data/music.json
+data/writing.json
+data/art.json
+media/music/*
+media/art/*
+!media/music/.gitkeep
+!media/art/.gitkeep
+.admin_pass
