@@ -212,6 +212,24 @@
     animation: landingFadeIn 0.8s ease forwards 1s;
   }
 
+  .newsletter-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--morning);
+    margin-bottom: 0.4rem;
+    text-align: center;
+  }
+
+  .newsletter-subheading {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--sage);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
   .landing-newsletter form {
     display: flex;
     gap: 0;
@@ -1801,6 +1819,8 @@
 
 <section class="landing-below">
   <div class="landing-newsletter">
+    <h3 class="newsletter-heading">Enter the world</h3>
+    <p class="newsletter-subheading">New music · Concerts · Musings</p>
     <form action="https://app.kit.com/forms/9232303/subscriptions" method="POST">
       <input type="email" name="email_address" placeholder="Your email" required>
       <button type="submit">Subscribe</button>
