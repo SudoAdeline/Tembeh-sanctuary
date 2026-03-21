@@ -1,3 +1,8 @@
+# Redirect ofbeautifulhope.com to tembeh.world
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?ofbeautifulhope\.com$ [NC]
+RewriteRule ^(.*)$ https://tembeh.world/$1 [R=301,L]
+
 # Protect sensitive files
 <FilesMatch "^\.admin_pass$">
     Require all denied

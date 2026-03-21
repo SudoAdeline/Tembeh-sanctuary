@@ -76,7 +76,7 @@ When the site loads, it checks the server first. If the server has content, it s
 
 Created by **Tembeh** — a multidisciplinary artist working across sound, word, and image.
 
-**ofbeautifulhope.com**
+**[tembeh.world](https://tembeh.world)**
 
 ## License
 
