@@ -205,16 +205,67 @@
   }
 
   .landing-newsletter {
-    max-width: 100%;
+    max-width: 480px;
     width: 100%;
     margin-bottom: 2rem;
     opacity: 0;
     animation: landingFadeIn 0.8s ease forwards 1s;
   }
 
-  .landing-newsletter .formkit-form {
-    max-width: 100% !important;
+  .landing-newsletter form {
+    display: flex;
+    gap: 0;
   }
+
+  .landing-newsletter input[type="email"] {
+    flex: 1;
+    background: rgba(20,28,19,0.6);
+    border: 1px solid rgba(168,184,154,0.3);
+    border-right: none;
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.9rem 1.2rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .landing-newsletter input[type="email"]::placeholder {
+    color: var(--sage);
+    opacity: 0.7;
+  }
+
+  .landing-newsletter input[type="email"]:focus {
+    border-color: var(--sage);
+  }
+
+  .landing-newsletter button {
+    background: var(--fern);
+    color: var(--morning);
+    border: 1px solid var(--fern);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.9rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    white-space: nowrap;
+  }
+
+  .landing-newsletter button:hover {
+    background: var(--sage);
+  }
+
+  .landing-newsletter .newsletter-msg {
+    font-size: 0.8rem;
+    margin-top: 0.8rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  .landing-newsletter .newsletter-msg.success { color: var(--sage); }
+  .landing-newsletter .newsletter-msg.error { color: #d4a0a0; }
 
   .landing-booking {
     font-size: 0.85rem;
@@ -1706,7 +1757,11 @@
 
 <section class="landing-below">
   <div class="landing-newsletter">
-    <script async data-uid="4236fa65a2" src="https://tembeh.kit.com/4236fa65a2/index.js"></script>
+    <form id="newsletterForm" onsubmit="submitNewsletter(event)">
+      <input type="email" name="email_address" placeholder="Your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <div class="newsletter-msg" id="newsletterMsg"></div>
   </div>
 
   <p class="landing-booking">Booking & inquiries: <a href="mailto:hello@tembeh.world">hello@tembeh.world</a></p>
@@ -2824,6 +2879,51 @@ function compressImage(file, maxSize = 1600, quality = 0.85) {
     };
     img.src = URL.createObjectURL(file);
   });
+}
+
+// ============================================================
+// NEWSLETTER
+// ============================================================
+async function submitNewsletter(e) {
+  e.preventDefault();
+  const form = document.getElementById('newsletterForm');
+  const msg = document.getElementById('newsletterMsg');
+  const email = form.email_address.value;
+  const btn = form.querySelector('button');
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('https://app.kit.com/forms/9232303/subscriptions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email_address: email }),
+    });
+    if (resp.ok || resp.status === 302 || resp.status === 200) {
+      msg.className = 'newsletter-msg success';
+      msg.textContent = 'You\'re in. Welcome to the sanctuary.';
+      form.reset();
+    } else {
+      throw new Error('Request failed');
+    }
+  } catch {
+    // Fallback: submit as a regular form POST (navigates to Kit's confirmation page)
+    const fallbackForm = document.createElement('form');
+    fallbackForm.method = 'POST';
+    fallbackForm.action = 'https://app.kit.com/forms/9232303/subscriptions';
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'email_address';
+    input.value = email;
+    fallbackForm.appendChild(input);
+    document.body.appendChild(fallbackForm);
+    fallbackForm.submit();
+    return;
+  }
+
+  btn.textContent = 'Subscribe';
+  btn.disabled = false;
 }
 
 // ============================================================
