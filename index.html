@@ -1966,14 +1966,6 @@
   </div>
 </section>
 
-<!-- Featured Video -->
-<section style="background: linear-gradient(to bottom, var(--moss), #1a2410); padding: 4rem 2rem;">
-  <div class="featured-video reveal" style="max-width: 800px; margin: 0 auto;">
-    <video src="media/art/tembeh-video.mp4" controls playsinline preload="metadata"
-      style="width: 100%; border-radius: 12px; display: block;"></video>
-  </div>
-</section>
-
 <!-- Music Content Section -->
 <section style="background: linear-gradient(to bottom, #1a2410, #162010);" id="music-section">
   <div class="content-section reveal">
@@ -2016,23 +2008,13 @@
   <div class="admin-container" id="adminContainer"></div>
 </div>
 
-<!-- Audio Teaser -->
+<!-- Featured Video -->
 <section style="padding: 6rem 3rem; background: #111a10; text-align: center;">
   <p class="section-label reveal" style="margin-bottom: 2rem;">A taste of what lives inside</p>
-  <div class="audio-preview reveal" id="audioPreviewSection">
-    <div class="audio-track-name" id="previewTrackName">Loading…</div>
-    <div class="audio-artist" id="previewArtist"></div>
-    <div class="audio-waveform" id="waveform"></div>
-    <div class="audio-controls">
-      <button class="play-btn" id="playBtn" onclick="togglePreview()">▶</button>
-      <div class="audio-bar-bg" onclick="seekPreview(event)">
-        <div class="audio-bar-fill" id="audioBarFill"></div>
-      </div>
-      <span class="audio-time" id="audioTime">0:00</span>
-    </div>
-    <audio id="previewAudio" preload="metadata"></audio>
+  <div class="reveal" style="max-width: 800px; margin: 0 auto;">
+    <video src="media/art/tembeh-video.mp4" controls playsinline preload="metadata"
+      style="width: 100%; border-radius: 12px; display: block;"></video>
   </div>
-  <!-- members text hidden for now -->
 </section>
 
 <!-- Membership (hidden for now — no payments active)
@@ -2313,9 +2295,9 @@ async function renderMusic() {
   musicItems = items;
   if (!items.length) {
     grid.innerHTML = '<div class="content-empty">The sound garden is being tended\u2026</div>';
+    grid.closest('.reveal')?.classList.add('visible');
     return;
   }
-  // Ensure section is visible when it has content
   grid.closest('.reveal')?.classList.add('visible');
   grid.innerHTML = items.map((t, i) => `
     <div class="music-card">
@@ -2416,9 +2398,9 @@ async function renderWriting() {
   const items = await fetchData('vault_writing');
   if (!items.length) {
     list.innerHTML = '<div class="content-empty">The undergrowth is still growing\u2026</div>';
+    list.closest('.reveal')?.classList.add('visible');
     return;
   }
-  // Ensure section is visible when it has content
   list.closest('.reveal')?.classList.add('visible');
   list.innerHTML = items.map((w, i) => `
     <div class="writing-item" onclick="this.classList.toggle('expanded')">
@@ -2444,9 +2426,9 @@ async function renderArt() {
   artItems = await fetchData('vault_art');
   if (!artItems.length) {
     grid.innerHTML = '<div class="content-empty">The visual garden is being planted\u2026</div>';
+    grid.closest('.reveal')?.classList.add('visible');
     return;
   }
-  // Ensure section is visible when it has content
   grid.closest('.reveal')?.classList.add('visible');
   grid.innerHTML = artItems.map((a, i) => `
     <div class="art-item" onclick="openLightbox(${i})">
