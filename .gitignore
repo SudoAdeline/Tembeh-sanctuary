@@ -2,13 +2,7 @@
 *.swp
 *.swo
 
-# Never overwrite uploaded content on deploy
-data/music.json
-data/writing.json
-data/art.json
-media/music/*
-media/art/*
+# Keep gitkeep files
 !media/music/.gitkeep
 !media/art/.gitkeep
-!media/art/tembeh-video.mp4
 .admin_pass

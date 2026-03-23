@@ -2173,29 +2173,75 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // ============================================================
-// VAULT CARD CLICKS -> scroll to sections
-// ============================================================
-document.querySelector('.vc-music').addEventListener('click', () => {
-  document.getElementById('music-section').scrollIntoView({ behavior: 'smooth' });
-});
-document.querySelector('.vc-writing').addEventListener('click', () => {
-  document.getElementById('writing-section').scrollIntoView({ behavior: 'smooth' });
-});
-document.querySelector('.vc-art').addEventListener('click', () => {
-  document.getElementById('art-section').scrollIntoView({ behavior: 'smooth' });
-});
 
 // ============================================================
 // DATA LAYER
 // ============================================================
-// localStorage — primary data store (always works in the browser)
+const GITHUB_REPO = 'SudoAdeline/Tembeh-sanctuary';
+
 function getData(key) {
   try { return JSON.parse(localStorage.getItem(key)) || []; }
   catch { return []; }
 }
-function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function setData(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+  // Persist to GitHub if token is set
+  const k = key.replace('vault_', '');
+  if (['music', 'writing', 'art'].includes(k)) {
+    pushToGitHub('data/' + k + '.json', val);
+  }
+}
 
-// Fetch data — reads localStorage first, falls back to static JSON files
+async function pushToGitHub(path, data) {
+  const token = localStorage.getItem('github_token');
+  if (!token) return;
+  try {
+    // Get current file SHA (needed for updates)
+    let sha = null;
+    try {
+      const existing = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+        headers: { Authorization: 'token ' + token }
+      });
+      if (existing.ok) { sha = (await existing.json()).sha; }
+    } catch {}
+    const body = { message: 'Update ' + path, content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))), branch: 'main' };
+    if (sha) body.sha = sha;
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } catch (e) { console.warn('GitHub sync failed:', e); }
+}
+
+// Upload media file to GitHub, return the repo-relative path
+async function uploadMediaToGitHub(file, subdir) {
+  const token = localStorage.getItem('github_token');
+  if (!token) return null;
+  try {
+    const safe = file.name.replace(/[^a-z0-9_.-]/gi, '_').toLowerCase();
+    const name = Date.now() + '_' + safe;
+    const path = 'media/' + subdir + '/' + name;
+    const base64 = await fileToBase64(file);
+    const body = { message: 'Upload ' + path, content: base64, branch: 'main' };
+    const resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (resp.ok) return path;
+  } catch (e) { console.warn('Media upload failed:', e); }
+  return null;
+}
+
+function fileToBase64(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.readAsDataURL(file);
+  });
+}
+
 const dataKeyMap = {
   vault_music: 'music',
   vault_writing: 'writing',
@@ -2217,7 +2263,6 @@ async function fetchData(key) {
       if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
     }
   } catch {}
-  // Built-in defaults
   if (k === 'art') return defaultArt;
   return local;
 }
@@ -2514,12 +2559,14 @@ async function renderAdminDashboard() {
       <div class="admin-tab ${adminTab==='writing'?'active':''}" onclick="adminTab='writing';renderAdminDashboard()">Writing</div>
       <div class="admin-tab ${adminTab==='art'?'active':''}" onclick="adminTab='art';renderAdminDashboard()">Art</div>
     </div>
-    <p style="font-size:0.65rem;color:var(--sage);margin-bottom:1.5rem;letter-spacing:0.1em;">Content is saved in your browser. To make it visible for all visitors, export and commit the JSON files to your repo's <code>data/</code> folder.</p>
-    <div style="margin-bottom:2rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="admin-btn admin-btn-save" onclick="exportData('music')" style="font-size:0.6rem;padding:0.5rem 1rem;">Export music.json</button>
-      <button class="admin-btn admin-btn-save" onclick="exportData('writing')" style="font-size:0.6rem;padding:0.5rem 1rem;">Export writing.json</button>
-      <button class="admin-btn admin-btn-save" onclick="exportData('art')" style="font-size:0.6rem;padding:0.5rem 1rem;">Export art.json</button>
-    </div>
+    ${localStorage.getItem('github_token')
+      ? '<p style="font-size:0.65rem;color:#7a9c6e;margin-bottom:1.5rem;letter-spacing:0.1em;">Connected to GitHub — content syncs automatically.</p>'
+      : `<div style="margin-bottom:1.5rem;padding:1rem;border:1px solid rgba(122,156,110,0.3);border-radius:8px;">
+          <p style="font-size:0.7rem;color:var(--sage);margin-bottom:0.5rem;">Connect GitHub to sync content across all devices:</p>
+          <input type="text" id="ghTokenInput" placeholder="GitHub Personal Access Token" style="width:100%;margin-bottom:0.5rem;padding:0.4rem;font-size:0.7rem;background:rgba(0,0,0,0.3);border:1px solid rgba(122,156,110,0.2);color:var(--morning);border-radius:4px;">
+          <button class="admin-btn admin-btn-save" onclick="saveGitHubToken()" style="font-size:0.6rem;padding:0.4rem 1rem;">Connect</button>
+          <p style="font-size:0.55rem;color:var(--sage);margin-top:0.4rem;opacity:0.7;">Create at github.com/settings/tokens → Fine-grained → Repo: Tembeh-sanctuary → Contents: Read+Write</p>
+        </div>`}
     <div id="adminPanelContent"></div>
   `;
 
@@ -2589,10 +2636,17 @@ async function saveMusic() {
 
   let audioUrl = existing.audio || '';
   if (audioFile) {
-    showProgress(30);
-    showUploadStatus('Processing audio…');
-    audioUrl = await fileToDataURL(audioFile);
-    showProgress(80);
+    showProgress(20);
+    showUploadStatus('Uploading audio…');
+    const ghPath = await uploadMediaToGitHub(audioFile, 'music');
+    if (ghPath) {
+      audioUrl = ghPath;
+      showProgress(80);
+    } else {
+      showUploadStatus('Processing audio…');
+      audioUrl = await fileToDataURL(audioFile);
+      showProgress(80);
+    }
   }
 
   const entry = {
@@ -2742,12 +2796,19 @@ async function saveArt() {
   let mediaType = existing.type || 'image';
   let mediaUrl = existing.image || '';
   if (mediaFile) {
-    showProgress(30);
-    showUploadStatus('Processing image…');
-    mediaUrl = await fileToDataURL(mediaFile);
+    showProgress(20);
     const ext = mediaFile.name.split('.').pop().toLowerCase();
     mediaType = videoExts.includes(ext) ? 'video' : 'image';
-    showProgress(80);
+    showUploadStatus('Uploading media…');
+    const ghPath = await uploadMediaToGitHub(mediaFile, 'art');
+    if (ghPath) {
+      mediaUrl = ghPath;
+      showProgress(80);
+    } else {
+      showUploadStatus('Processing media…');
+      mediaUrl = await fileToDataURL(mediaFile);
+      showProgress(80);
+    }
   }
   const entry = {
     title: title,
@@ -2826,6 +2887,13 @@ function exportData(key) {
   a.download = key + '.json';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function saveGitHubToken() {
+  const token = document.getElementById('ghTokenInput').value.trim();
+  if (!token) return;
+  localStorage.setItem('github_token', token);
+  renderAdminDashboard();
 }
 
 // Compress image before upload (max 1600px, 0.85 quality)
