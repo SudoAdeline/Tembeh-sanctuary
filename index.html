@@ -2247,9 +2247,6 @@ const dataKeyMap = {
   vault_writing: 'writing',
   vault_art: 'art',
 };
-const defaultArt = [
-  { title: 'Tembeh', description: '', image: 'media/art/tembeh-video.mp4', type: 'video' }
-];
 async function fetchData(key) {
   const k = dataKeyMap[key] || key;
   const lsKey = 'vault_' + k;
@@ -2263,7 +2260,6 @@ async function fetchData(key) {
       if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
     }
   } catch {}
-  if (k === 'art') return defaultArt;
   return local;
 }
 
