@@ -408,9 +408,20 @@
     overflow: hidden;
   }
 
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;
+    z-index: 0;
+  }
+
   .forest-bg {
     position: absolute;
     inset: 0;
+    z-index: 1;
     background:
       radial-gradient(ellipse 60% 80% at 50% 110%, rgba(74,103,65,0.6) 0%, transparent 70%),
       radial-gradient(ellipse 40% 60% at 20% 100%, rgba(45,59,42,0.9) 0%, transparent 60%),
@@ -426,6 +437,7 @@
     right: 0;
     height: 70%;
     pointer-events: none;
+    z-index: 1;
   }
 
   .hero-content {
@@ -1864,6 +1876,9 @@
 
 <!-- Hero -->
 <section class="hero" id="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="media/hero-video.mp4" type="video/mp4">
+  </video>
   <div class="forest-bg"></div>
 
   <!-- SVG Trees -->
@@ -1934,7 +1949,7 @@
   <div class="intro" id="about">
     <div class="intro-text reveal">
       <p class="section-label">The Artist</p>
-      <h2>Tembeh.<br><em>Of Beautiful Hope.</em></h2>
+      <h2>Tembeh.</h2>
       <p><span id="tembehAge"></span>-year-old singer-songwriter, pianist and producer based in Germany. Classical piano since five, guitar since thirteen, writing songs ever since. A sound woven from folk, soul and ambient meditation — honest lyrics carried by a voice that's equal parts silk and fire.</p>
       <p>Born and raised in South Africa, rooted in music, still becoming. Every song is a room you're invited into. Every note, a piece of the truth.</p>
       <div class="intro-awards">
@@ -1947,9 +1962,6 @@
     </div>
     <div class="intro-visual reveal" style="transition-delay: 0.2s;">
       <img src="media/tembeh-live.jpg" alt="Tembeh performing live" class="intro-photo-main">
-      <div class="intro-photo-strip">
-        <img src="media/tembeh-photo.jpg" alt="Tembeh portrait">
-      </div>
     </div>
   </div>
 </section>
