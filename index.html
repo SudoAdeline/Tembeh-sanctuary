@@ -2151,74 +2151,6 @@ for (let i = 0; i < 18; i++) {
   pc.appendChild(p);
 }
 
-// ============================================================
-// AUDIO PREVIEW (dynamic — plays first uploaded track)
-// ============================================================
-const waveform = document.getElementById('waveform');
-const heights = [20,35,55,40,65,80,45,70,90,60,50,75,85,55,40,65,35,80,60,45,70,55,85,40,60,75,50,65,35,45];
-heights.forEach((h, i) => {
-  const bar = document.createElement('div');
-  bar.className = 'wave-bar' + (i < 10 ? ' active' : '');
-  bar.style.height = h + '%';
-  bar.style.animationDelay = (i * 0.05) + 's';
-  waveform.appendChild(bar);
-});
-
-const previewAudio = document.getElementById('previewAudio');
-let previewInterval;
-
-async function initAudioPreview() {
-  const items = await fetchData('vault_music');
-  const track = items[0];
-  if (!track) {
-    document.getElementById('audioPreviewSection').closest('section').style.display = 'none';
-    return;
-  }
-  document.getElementById('previewTrackName').textContent = track.title;
-  document.getElementById('previewArtist').textContent = track.artist ? `${track.artist} · Preview` : 'Preview';
-  if (track.audio) previewAudio.src = track.audio;
-  document.getElementById('playBtn').style.display = '';
-
-  previewAudio.addEventListener('timeupdate', () => {
-    if (!previewAudio.duration) return;
-    const pct = (previewAudio.currentTime / previewAudio.duration) * 100;
-    document.getElementById('audioBarFill').style.width = pct + '%';
-    document.getElementById('audioTime').textContent =
-      formatTime(previewAudio.currentTime) + ' / ' + formatTime(previewAudio.duration);
-  });
-
-  previewAudio.addEventListener('ended', () => {
-    document.getElementById('playBtn').textContent = '▶';
-    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
-  });
-}
-
-function togglePreview() {
-  if (!previewAudio.src) return;
-  const btn = document.getElementById('playBtn');
-  if (previewAudio.paused) {
-    // Pause any track playing in the music section
-    if (currentAudio && !currentAudio.paused) {
-      currentAudio.pause();
-      const prevBtn = document.querySelector(`[data-idx="${currentAudioId}"]`);
-      if (prevBtn) prevBtn.textContent = '▶';
-    }
-    previewAudio.play();
-    btn.textContent = '⏸';
-    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'running');
-  } else {
-    previewAudio.pause();
-    btn.textContent = '▶';
-    document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
-  }
-}
-
-function seekPreview(e) {
-  if (!previewAudio.duration) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  previewAudio.currentTime = pct * previewAudio.duration;
-}
 
 // ============================================================
 // SCROLL REVEAL
@@ -2927,7 +2859,6 @@ function compressImage(file, maxSize = 1600, quality = 0.85) {
 renderMusic();
 renderWriting();
 renderArt();
-initAudioPreview();
 </script>
 </body>
 </html>
