@@ -1944,28 +1944,6 @@
   </div>
 </section>
 
-<!-- Intro -->
-<section style="background: linear-gradient(to bottom, #0e1510, var(--moss));">
-  <div class="intro" id="about">
-    <div class="intro-text reveal">
-      <p class="section-label">The Artist</p>
-      <h2>Tembeh.</h2>
-      <p><span id="tembehAge"></span>-year-old singer-songwriter, pianist and producer based in Germany. Classical piano since five, guitar since thirteen, writing songs ever since. A sound woven from folk, soul and ambient meditation — honest lyrics carried by a voice that's equal parts silk and fire.</p>
-      <p>Born and raised in South Africa, rooted in music, still becoming. Every song is a room you're invited into. Every note, a piece of the truth.</p>
-      <div class="intro-awards">
-        <p class="intro-awards-label">Recognition</p>
-        <div class="intro-award"><em>POP-Stipendium</em> — POP B&Uuml;RO Stuttgart, 2024</div>
-        <div class="intro-award"><em>Songslam Winner</em> — T&uuml;bingen, Oct 2025</div>
-        <div class="intro-award"><em>Songslam Winner</em> — Stuttgart, Mar 2026</div>
-      </div>
-      <a href="#vault" class="btn-ghost" style="margin-top: 2rem;">Step inside</a>
-    </div>
-    <div class="intro-visual reveal" style="transition-delay: 0.2s;">
-      <img src="media/tembeh-live.jpg" alt="Tembeh performing live" class="intro-photo-main">
-    </div>
-  </div>
-</section>
-
 <!-- Vault Preview -->
 <section class="vault-section" id="vault">
   <div class="vault-header reveal">
@@ -1973,7 +1951,6 @@
       <p class="section-label">The Archive</p>
       <h2>Three doors<br>into the <em>forest</em></h2>
     </div>
-    <!-- unlock all link hidden for now -->
   </div>
 
   <div class="vault-grid reveal">
@@ -2340,6 +2317,9 @@ const dataKeyMap = {
   vault_writing: 'writing',
   vault_art: 'art',
 };
+const defaultArt = [
+  { title: 'Tembeh', description: '', image: 'media/art/tembeh-video.mp4', type: 'video' }
+];
 async function fetchData(key) {
   const k = dataKeyMap[key] || key;
   const lsKey = 'vault_' + k;
@@ -2353,6 +2333,8 @@ async function fetchData(key) {
       if (Array.isArray(data) && data.length) { setData(lsKey, data); return data; }
     }
   } catch {}
+  // Built-in defaults
+  if (k === 'art') return defaultArt;
   return local;
 }
 
