@@ -1966,6 +1966,14 @@
   </div>
 </section>
 
+<!-- Featured Video -->
+<section style="background: linear-gradient(to bottom, var(--moss), #1a2410); padding: 4rem 2rem;">
+  <div class="featured-video reveal" style="max-width: 800px; margin: 0 auto;">
+    <video src="media/art/tembeh-video.mp4" controls playsinline preload="metadata"
+      style="width: 100%; border-radius: 12px; display: block;"></video>
+  </div>
+</section>
+
 <!-- Music Content Section -->
 <section style="background: linear-gradient(to bottom, #1a2410, #162010);" id="music-section">
   <div class="content-section reveal">
@@ -2181,9 +2189,7 @@ async function initAudioPreview() {
   const items = await fetchData('vault_music');
   const track = items[0];
   if (!track) {
-    document.getElementById('previewTrackName').textContent = 'Coming soon…';
-    document.getElementById('previewArtist').textContent = 'New music on the way';
-    document.getElementById('playBtn').style.display = 'none';
+    document.getElementById('audioPreviewSection').closest('section').style.display = 'none';
     return;
   }
   document.getElementById('previewTrackName').textContent = track.title;
