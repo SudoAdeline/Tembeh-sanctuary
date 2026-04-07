@@ -1213,6 +1213,126 @@
     .tier { padding: 2rem; }
   }
 
+  /* === GATHERINGS (Concert Dates) === */
+  .gatherings {
+    padding: 6rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .gatherings-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 0.8rem;
+  }
+  .gatherings-title em { font-style: italic; color: var(--lichen); }
+  .gatherings-subtitle {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.9rem;
+    color: var(--sage);
+    margin-bottom: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+  .gathering-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .gathering-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.8rem 2rem;
+    background: rgba(168,184,154,0.04);
+    border-left: 2px solid rgba(168,184,154,0.15);
+    text-align: left;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .gathering-item:hover {
+    background: rgba(168,184,154,0.08);
+    border-left-color: var(--sage);
+  }
+  .gathering-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--lichen);
+    line-height: 1.3;
+  }
+  .gathering-date .day {
+    font-size: 2rem;
+    display: block;
+    color: var(--morning);
+    font-weight: 300;
+  }
+  .gathering-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .gathering-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--morning);
+    font-weight: 400;
+  }
+  .gathering-venue {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.8rem;
+    color: var(--sage);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+  .gathering-link {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lichen);
+    border: 1px solid rgba(168,184,154,0.3);
+    padding: 0.6rem 1.5rem;
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s, transform 0.3s;
+    cursor: none;
+    white-space: nowrap;
+  }
+  .gathering-link:hover {
+    border-color: var(--lichen);
+    color: var(--morning);
+    transform: translateY(-2px);
+  }
+  .gathering-link.sold-out {
+    color: var(--mist);
+    border-color: rgba(168,184,154,0.1);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .gatherings-empty {
+    padding: 3rem 2rem;
+    color: var(--sage);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .gatherings { padding: 4rem 1.5rem; }
+    .gathering-item {
+      grid-template-columns: 80px 1fr;
+      gap: 1.2rem;
+      padding: 1.4rem 1.2rem;
+    }
+    .gathering-link {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  }
+
   /* === CONTENT SECTIONS === */
   .content-section {
     padding: 6rem 3rem;
@@ -1804,6 +1924,7 @@
 <nav>
   <a href="#" class="nav-logo">tembeh</a>
   <ul class="nav-links">
+    <li><a href="#gatherings">Gatherings</a></li>
     <li><a href="#music-section">Music</a></li>
     <li><a href="#writing-section">Writing</a></li>
     <li><a href="#art-section">Art</a></li>
@@ -1817,6 +1938,7 @@
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
+  <a href="#gatherings" onclick="closeMobileMenu()">Gatherings</a>
   <a href="#music-section" onclick="closeMobileMenu()">Music</a>
   <a href="#writing-section" onclick="closeMobileMenu()">Writing</a>
   <a href="#art-section" onclick="closeMobileMenu()">Art</a>
@@ -1947,8 +2069,50 @@
   </div>
 </section>
 
+<!-- Gatherings -->
+<section style="background: linear-gradient(to bottom, #0e1510, #1a2718);" id="gatherings">
+  <div class="gatherings reveal">
+    <p class="section-label">Gatherings</p>
+    <h2 class="gatherings-title">Where the <em>roots</em> meet</h2>
+    <p class="gatherings-subtitle">Live music, shared breath, sacred ground</p>
+
+    <div class="gathering-list">
+
+      <!-- EXAMPLE DATES — replace with your actual concerts -->
+      <div class="gathering-item">
+        <div class="gathering-date"><span class="day">25</span>Apr 2026</div>
+        <div class="gathering-info">
+          <div class="gathering-name">Songslam Tübingen</div>
+          <div class="gathering-venue">Sudhaus — Tübingen, DE</div>
+        </div>
+        <a href="https://pretix.eu/tembeh/" target="_blank" rel="noopener" class="gathering-link">Find Tickets</a>
+      </div>
+
+      <div class="gathering-item">
+        <div class="gathering-date"><span class="day">10</span>May 2026</div>
+        <div class="gathering-info">
+          <div class="gathering-name">An Evening with Tembeh</div>
+          <div class="gathering-venue">Merlin — Stuttgart, DE</div>
+        </div>
+        <a href="https://pretix.eu/tembeh/" target="_blank" rel="noopener" class="gathering-link">Find Tickets</a>
+      </div>
+
+      <div class="gathering-item">
+        <div class="gathering-date"><span class="day">21</span>Jun 2026</div>
+        <div class="gathering-info">
+          <div class="gathering-name">Fête de la Musique</div>
+          <div class="gathering-venue">Open Air — Tübingen, DE</div>
+        </div>
+        <a href="https://pretix.eu/tembeh/" target="_blank" rel="noopener" class="gathering-link">Find Tickets</a>
+      </div>
+      <!-- END EXAMPLE DATES -->
+
+    </div>
+  </div>
+</section>
+
 <!-- Intro -->
-<section style="background: linear-gradient(to bottom, #0e1510, var(--moss));">
+<section style="background: linear-gradient(to bottom, #1a2718, var(--moss));">
   <div class="intro" id="about">
     <div class="intro-text reveal">
       <p class="section-label">The Artist</p>
