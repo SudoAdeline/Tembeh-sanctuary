@@ -511,6 +511,81 @@
     .lore-content { padding: 6rem 1.5rem; }
   }
 
+  /* === THE HIDDEN THICKET === */
+  .thicket-section {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #0a0f0b 0%, #0d120e 30%, #0d120e 70%, var(--moss) 100%);
+    text-align: center;
+  }
+  .thicket-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .thicket-content {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8rem 3rem;
+  }
+  .thicket-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 0.8rem;
+  }
+  .thicket-title em {
+    font-style: italic;
+    color: rgba(210,200,170,0.75);
+  }
+  .thicket-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.6);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+  .thicket-body {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(230,220,200,0.65);
+    margin-bottom: 3rem;
+  }
+  .thicket-btn {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: rgba(230,220,200,0.9);
+    background: rgba(210,200,180,0.08);
+    border: 1px solid rgba(210,200,180,0.25);
+    border-radius: 2rem;
+    padding: 0.8rem 2.2rem;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+    cursor: none;
+  }
+  .thicket-btn:hover {
+    background: rgba(210,200,180,0.15);
+    border-color: rgba(210,200,180,0.45);
+    color: var(--morning);
+    transform: translateY(-2px);
+  }
+  @media (max-width: 768px) {
+    .thicket-content { padding: 5rem 1.5rem; }
+  }
+
   .btn-primary {
     font-family: 'Karla', sans-serif;
     font-size: 0.75rem;
@@ -2191,108 +2266,17 @@
   </div>
 </section>
 
-<!-- Music Content Section -->
-<section style="background: linear-gradient(to bottom, #0a0f0b, #162010);" id="music-section">
-  <div class="content-section reveal">
-    <h2 class="content-section-title">The <em>Sound</em> Garden</h2>
-    <div class="music-grid" id="musicGrid">
-      <div class="content-empty">The sound garden is being tended&hellip;</div>
-    </div>
+<!-- The Hidden Thicket -->
+<section class="thicket-section" id="music-section">
+  <div class="thicket-particles" id="thicketParticles"></div>
+  <div class="thicket-content reveal">
+    <p class="section-label">Coming Soon</p>
+    <h2 class="thicket-title">The Hidden <em>Thicket</em></h2>
+    <p class="thicket-sub">For those who wish to wander deeper.</p>
+    <p class="thicket-body">The Everglade has secrets not meant for the city noise. Join my inner circle of Seekers for unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest.</p>
+    <a href="https://ko-fi.com/tembeh" target="_blank" rel="noopener" class="thicket-btn">Join the Seekers</a>
   </div>
 </section>
-
-<!-- Writing Content Section -->
-<section style="background: linear-gradient(to bottom, #162010, #1a1810);" id="writing-section">
-  <div class="content-section reveal">
-    <h2 class="content-section-title">Words from the <em>Undergrowth</em></h2>
-    <div class="writing-list" id="writingList">
-      <div class="content-empty">The undergrowth is still growing&hellip;</div>
-    </div>
-  </div>
-</section>
-
-<!-- Art Content Section -->
-<section style="background: linear-gradient(to bottom, #1a1810, #111a10);" id="art-section">
-  <div class="content-section reveal">
-    <h2 class="content-section-title">The <em>Visual</em> Garden</h2>
-    <div class="art-grid" id="artGrid">
-      <div class="content-empty">The visual garden is being planted&hellip;</div>
-    </div>
-  </div>
-</section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
-  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="">
-  <video class="lightbox-video lightbox-media-hidden" id="lightboxVideo" controls></video>
-  <div class="lightbox-info">
-    <div class="lightbox-title" id="lightboxTitle"></div>
-    <div class="lightbox-desc" id="lightboxDesc"></div>
-  </div>
-</div>
-
-<!-- Admin Overlay -->
-<div class="admin-overlay" id="adminOverlay">
-  <div class="admin-container" id="adminContainer"></div>
-</div>
-
-<!-- Featured Video -->
-<section style="padding: 6rem 3rem; background: #111a10; text-align: center;">
-  <p class="section-label reveal" style="margin-bottom: 2rem;">A taste of what lives inside</p>
-  <div class="reveal" style="max-width: 800px; margin: 0 auto;">
-    <video src="media/art/tembeh-video.mp4" controls playsinline preload="metadata"
-      style="width: 100%; border-radius: 12px; display: block;"></video>
-  </div>
-</section>
-
-<!-- Membership (hidden for now — no payments active)
-<section style="background: linear-gradient(to bottom, #111a10, var(--moss));" id="membership">
-  <div class="membership reveal">
-    <p class="section-label">Access</p>
-    <h2>Tend the <em>garden</em><br>with me</h2>
-    <p>This world grows with time. Every season brings new music, new writing, new work. Members keep the roots alive — and get access to everything.</p>
-
-    <div class="tiers">
-      <div class="tier tier-free reveal">
-        <p class="tier-label">Wanderer</p>
-        <div class="tier-price">Free</div>
-        <p class="tier-period">always</p>
-        <ul class="tier-features">
-          <li>First 3 tracks in the music catalog</li>
-          <li>First 3 pieces of writing & poetry</li>
-          <li>First 3 works in the art gallery</li>
-          <li class="locked">Full music catalog & downloads</li>
-          <li class="locked">All writings & essays</li>
-          <li class="locked">Full gallery & high-res prints</li>
-        </ul>
-        <a href="#" class="btn-ghost" style="font-size:0.7rem; padding: 0.8rem 1.5rem;">Enter freely</a>
-        <div class="tier-glow"></div>
-      </div>
-
-      <div class="tier tier-paid reveal" style="transition-delay:0.15s;">
-        <p class="tier-label">Member</p>
-        <div class="tier-price"><span>$</span>8</div>
-        <p class="tier-period">per month · cancel anytime</p>
-        <ul class="tier-features">
-          <li>Full music catalog, streaming & download</li>
-          <li>All writings, essays & poetry</li>
-          <li>Complete art gallery, full resolution</li>
-          <li>Process work & voice notes</li>
-          <li>Members-only print access</li>
-          <li>Direct email when new work arrives</li>
-        </ul>
-        <a href="#" class="btn-primary" style="font-size:0.7rem; padding: 0.8rem 1.5rem;">Take root</a>
-        <div class="tier-glow"></div>
-      </div>
-    </div>
-
-    <p style="font-size:0.75rem; color: var(--sage); letter-spacing: 0.1em; line-height: 2;">No platform takes a cut. Every dollar goes directly to sustaining the work.<br>Powered by Ghost + Stripe.</p>
-  </div>
-</section>
--->
 
 <!-- Footer -->
 <footer>
@@ -2417,6 +2401,25 @@ if (lopc) {
       animation-delay:${-Math.random()*dur}s;
     `;
     lopc.appendChild(g);
+  }
+}
+
+// Thicket glow particles
+const tpc = document.getElementById('thicketParticles');
+if (tpc) {
+  for (let i = 0; i < 15; i++) {
+    const g = document.createElement('div');
+    g.className = 'glow-particle';
+    const size = Math.random() * 3 + 1.5;
+    const dur = 6 + Math.random() * 8;
+    g.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${15 + Math.random()*70}%;
+      animation-duration:${dur}s;
+      animation-delay:${-Math.random()*dur}s;
+    `;
+    tpc.appendChild(g);
   }
 }
 
