@@ -84,12 +84,33 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     position: relative;
     padding: 6rem 2rem 4rem;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(74,103,65,0.3) 0%, transparent 70%),
-      linear-gradient(to bottom, #0a0f0b 0%, #1a2718 50%, var(--moss) 100%);
+    background: #0a0f0b;
+    overflow: hidden;
+  }
+
+  .landing-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    z-index: 0;
+  }
+
+  .landing-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 30%, rgba(10,15,11,0.85) 75%, #0a0f0b 100%);
+    z-index: 1;
+  }
+
+  .landing > *:not(.landing-bg):not(.landing-overlay) {
+    position: relative;
+    z-index: 2;
   }
 
   .landing-below {
@@ -101,15 +122,7 @@
   }
 
   .landing-photo {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: none;
-    box-shadow: 0 0 50px rgba(0,0,0,0.4);
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: landingFadeIn 0.8s ease forwards 0.2s;
+    display: none;
   }
 
   .landing-name {
@@ -392,7 +405,7 @@
 
   @media (max-width: 768px) {
     .landing { padding: 3rem 1.5rem; }
-    .landing-photo { width: 140px; height: 140px; }
+    .landing-photo { display: none; }
     .landing-newsletter form { flex-direction: column; }
     .landing-newsletter button { width: 100%; }
   }
@@ -1204,7 +1217,7 @@
 
   @media (max-width: 480px) {
     .landing { padding: 2rem 1rem; }
-    .landing-photo { width: 120px; height: 120px; }
+    .landing-photo { display: none; }
     .landing-music-links { gap: 0.6rem; }
     .landing-music-links a { padding: 0.5rem 0.9rem; font-size: 0.8rem; }
     .art-grid { grid-template-columns: 1fr; }
@@ -1948,7 +1961,8 @@
 
 <!-- Landing -->
 <section class="landing" id="landing">
-  <img src="media/tembeh-photo.jpg" alt="Tembeh" class="landing-photo">
+  <img src="Harp picture.png" alt="Tembeh playing harp" class="landing-bg">
+  <div class="landing-overlay"></div>
   <h1 class="landing-name">Tembeh</h1>
   <p class="landing-tagline">musician · artist · creator</p>
 
@@ -2050,7 +2064,9 @@
 
 <!-- Hero -->
 <section class="hero" id="hero">
-  <img class="hero-video" src="Harp picture.png" alt="Tembeh playing harp">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="media/hero-video.mp4" type="video/mp4">
+  </video>
   <div class="forest-bg"></div>
 
   <!-- SVG Trees -->
