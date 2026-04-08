@@ -251,7 +251,71 @@
 
   .landing-newsletter form {
     display: flex;
+    flex-direction: column;
     gap: 0;
+  }
+
+  .newsletter-row {
+    display: flex;
+    gap: 0;
+  }
+
+  .newsletter-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .newsletter-consent input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid rgba(210,200,180,0.3);
+    border-radius: 3px;
+    background: rgba(20,28,19,0.6);
+    cursor: pointer;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .newsletter-consent input[type="checkbox"]:checked {
+    background: rgba(210,200,170,0.3);
+    border-color: rgba(210,200,180,0.6);
+  }
+
+  .newsletter-consent input[type="checkbox"]:checked::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 8px;
+    border: solid var(--morning);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    margin: 1px auto 0;
+  }
+
+  .newsletter-consent span {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.5);
+    line-height: 1.5;
+  }
+
+  .newsletter-consent a {
+    color: rgba(210,200,180,0.7);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.3s;
+  }
+
+  .newsletter-consent a:hover {
+    color: var(--morning);
   }
 
   .landing-newsletter input[type="email"] {
@@ -407,7 +471,7 @@
   @media (max-width: 768px) {
     .landing { padding: 3rem 1.5rem; }
     .landing-photo { display: none; }
-    .landing-newsletter form { flex-direction: column; }
+    .newsletter-row { flex-direction: column; }
     .landing-newsletter button { width: 100%; }
   }
 
@@ -2246,10 +2310,16 @@
   <div class="landing-newsletter">
     <h3 class="newsletter-heading">Hear the Forest Whisper</h3>
     <p class="newsletter-subheading">New songs, gathering dates, and quiet dispatches from the Everglade — delivered when the time is right.</p>
-    <form action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank">
-      <input type="email" name="EMAIL" placeholder="Your email" required>
-      <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
-      <button type="submit">Listen In</button>
+    <form action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank" id="newsletterForm">
+      <div class="newsletter-row">
+        <input type="email" name="EMAIL" placeholder="Your email" required>
+        <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
+        <button type="submit">Listen In</button>
+      </div>
+      <label class="newsletter-consent">
+        <input type="checkbox" id="privacyConsent" required>
+        <span>I agree to the processing of my email address in accordance with the <a href="/datenschutz" target="_blank">privacy policy</a>. I can unsubscribe at any time.</span>
+      </label>
     </form>
   </div>
 
