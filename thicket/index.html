@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hidden Thicket — Tembeh</title>
+<meta name="description" content="The Thicket is being grown. A sanctuary for Seekers — unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --moss: #2d3b2a;
+    --bark: #3d2e1e;
+    --fern: #4a6741;
+    --sage: #7a9c6e;
+    --lichen: #a8b89a;
+    --petal: #c9b49a;
+    --morning: #e8dfc8;
+    --dew: #f2ede0;
+    --mist: #d4cbb8;
+    --gold: #b8935a;
+    --bloom: #8b6f5c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0f0b;
+    color: var(--dew);
+    font-family: 'Karla', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .thicket-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 3rem 2rem;
+  }
+
+  .thicket-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    filter: brightness(0.45) saturate(0.7);
+  }
+
+  .thicket-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse at center, rgba(10,15,11,0.4) 0%, rgba(10,15,11,0.75) 70%),
+      linear-gradient(to bottom, rgba(10,15,11,0.6) 0%, rgba(10,15,11,0.3) 40%, rgba(10,15,11,0.3) 60%, rgba(10,15,11,0.8) 100%);
+  }
+
+  .thicket-card {
+    position: relative;
+    z-index: 2;
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    padding: 4rem 3rem;
+  }
+
+  .back-link {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    z-index: 10;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.5);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .back-link:hover {
+    color: var(--morning);
+  }
+
+  .thicket-label {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(210,200,180,0.4);
+    margin-bottom: 2rem;
+  }
+
+  .thicket-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    font-weight: 300;
+    color: var(--morning);
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .thicket-title em {
+    font-style: italic;
+    color: rgba(210,200,170,0.75);
+  }
+
+  .thicket-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.55);
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .thicket-body {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 2;
+    color: rgba(230,220,200,0.6);
+    margin-bottom: 3rem;
+  }
+
+  .thicket-divider {
+    width: 30px;
+    height: 1px;
+    background: rgba(210,200,180,0.2);
+    margin: 0 auto 2.5rem;
+  }
+
+  .thicket-notify {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.5);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .thicket-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .thicket-form .form-row {
+    display: flex;
+    gap: 0;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(210,200,180,0.2);
+    background: rgba(20,28,19,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .thicket-form .form-row:focus-within {
+    border-color: rgba(210,200,180,0.4);
+    box-shadow: 0 0 30px rgba(168,184,154,0.08);
+  }
+
+  .thicket-form input[type="email"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    padding: 0.95rem 1.4rem;
+    outline: none;
+    letter-spacing: 0.02em;
+  }
+  .thicket-form input[type="email"]::placeholder {
+    color: rgba(210,200,180,0.35);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+  }
+
+  .thicket-form button {
+    background: rgba(210,200,180,0.1);
+    color: rgba(230,220,200,0.85);
+    border: none;
+    border-left: 1px solid rgba(210,200,180,0.15);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    padding: 0.95rem 1.8rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+  }
+  .thicket-form button:hover {
+    background: rgba(210,200,180,0.2);
+    color: var(--morning);
+  }
+
+  .thicket-form .form-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    max-width: 400px;
+    margin: 1.2rem auto 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .thicket-form .form-consent input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid rgba(210,200,180,0.3);
+    border-radius: 3px;
+    background: rgba(20,28,19,0.5);
+    cursor: pointer;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+  .thicket-form .form-consent input[type="checkbox"]:checked {
+    background: rgba(210,200,170,0.3);
+    border-color: rgba(210,200,180,0.6);
+  }
+  .thicket-form .form-consent input[type="checkbox"]:checked::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 8px;
+    border: solid var(--morning);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    margin: 1px auto 0;
+  }
+  .thicket-form .form-consent span {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.4);
+    line-height: 1.5;
+  }
+  .thicket-form .form-consent a {
+    color: rgba(210,200,180,0.6);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.3s;
+  }
+  .thicket-form .form-consent a:hover {
+    color: var(--morning);
+  }
+
+  /* Floating particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(168,184,154,0.12);
+    animation: float-up linear infinite;
+  }
+  @keyframes float-up {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  @media (max-width: 768px) {
+    .thicket-card { padding: 3rem 1.5rem; }
+    .thicket-form .form-row { flex-direction: column; border-radius: 1rem; }
+    .thicket-form button { width: 100%; border-left: none; border-top: 1px solid rgba(210,200,180,0.15); }
+    .back-link { top: 1.2rem; left: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<a href="/" class="back-link">&larr; Back to the Glade</a>
+
+<div class="particles" id="particles"></div>
+
+<section class="thicket-page">
+  <img src="/Harp picture.png" alt="" class="thicket-bg">
+  <div class="thicket-overlay"></div>
+
+  <div class="thicket-card">
+    <p class="thicket-label">Coming Soon</p>
+    <h1 class="thicket-title">The Hidden <em>Thicket</em></h1>
+    <p class="thicket-sub">A sanctuary for those who wander deeper.</p>
+
+    <p class="thicket-body">
+      The Thicket is still being grown — roots reaching into the dark soil, branches weaving a canopy of unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest. A place where the Seekers gather, away from the noise, closer to the source.
+    </p>
+
+    <div class="thicket-divider"></div>
+
+    <p class="thicket-notify">Be the first to know when the path opens.</p>
+
+    <form class="thicket-form" action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank">
+      <div class="form-row">
+        <input type="email" name="EMAIL" placeholder="Your email" required>
+        <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
+        <button type="submit">Notify Me</button>
+      </div>
+      <label class="form-consent">
+        <input type="checkbox" required>
+        <span>I agree to the processing of my email address in accordance with the <a href="/datenschutz" target="_blank">privacy policy</a>. I can unsubscribe at any time.</span>
+      </label>
+    </form>
+  </div>
+</section>
+
+<script>
+// Floating particles
+const pc = document.getElementById('particles');
+for (let i = 0; i < 20; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 3 + 1;
+  p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
+  pc.appendChild(p);
+}
+</script>
+</body>
+</html>

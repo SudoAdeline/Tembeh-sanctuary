@@ -193,13 +193,120 @@
   .glade-newsletter {
     margin-bottom: 4rem;
   }
+  .glade-newsletter form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .glade-newsletter .newsletter-row {
-    max-width: 480px;
+    display: flex;
+    gap: 0;
+    max-width: 440px;
     margin: 0 auto;
+    width: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(210,200,180,0.2);
+    background: rgba(20,28,19,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .glade-newsletter .newsletter-row:focus-within {
+    border-color: rgba(210,200,180,0.4);
+    box-shadow: 0 0 30px rgba(168,184,154,0.08);
+  }
+  .glade-newsletter input[type="email"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    padding: 0.95rem 1.4rem;
+    outline: none;
+    letter-spacing: 0.02em;
+  }
+  .glade-newsletter input[type="email"]::placeholder {
+    color: rgba(210,200,180,0.35);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+  }
+  .glade-newsletter button {
+    background: rgba(210,200,180,0.1);
+    color: rgba(230,220,200,0.85);
+    border: none;
+    border-left: 1px solid rgba(210,200,180,0.15);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    padding: 0.95rem 1.8rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+  }
+  .glade-newsletter button:hover {
+    background: rgba(210,200,180,0.2);
+    color: var(--morning);
   }
   .glade-newsletter .newsletter-consent {
-    max-width: 480px;
-    margin: 1rem auto 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    max-width: 440px;
+    margin: 1.2rem auto 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .glade-newsletter .newsletter-consent input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid rgba(210,200,180,0.3);
+    border-radius: 3px;
+    background: rgba(20,28,19,0.5);
+    cursor: pointer;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+  .glade-newsletter .newsletter-consent input[type="checkbox"]:checked {
+    background: rgba(210,200,170,0.3);
+    border-color: rgba(210,200,180,0.6);
+  }
+  .glade-newsletter .newsletter-consent input[type="checkbox"]:checked::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 8px;
+    border: solid var(--morning);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    margin: 1px auto 0;
+  }
+  .glade-newsletter .newsletter-consent span {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.4);
+    line-height: 1.5;
+  }
+  .glade-newsletter .newsletter-consent a {
+    color: rgba(210,200,180,0.6);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.3s;
+  }
+  .glade-newsletter .newsletter-consent a:hover {
+    color: var(--morning);
+  }
+  @media (max-width: 768px) {
+    .glade-newsletter .newsletter-row { flex-direction: column; border-radius: 1rem; }
+    .glade-newsletter button { width: 100%; border-left: none; border-top: 1px solid rgba(210,200,180,0.15); }
   }
   .glade-contact {
     margin-bottom: 4rem;
@@ -2348,7 +2455,8 @@
   <ul class="nav-links">
     <li><a href="#gatherings">Gatherings</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#music-section">Letters</a></li>
+    <li><a href="#music-section">The Glade</a></li>
+    <li><a href="/thicket">The Thicket</a></li>
   </ul>
   <a href="#hero" class="nav-cta" onclick="document.getElementById('hero').scrollIntoView({behavior:'smooth'});return false;">Enter The Glade</a>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
@@ -2360,7 +2468,8 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#gatherings" onclick="closeMobileMenu()">Gatherings</a>
   <a href="#about" onclick="closeMobileMenu()">About</a>
-  <a href="#music-section" onclick="closeMobileMenu()">Letters</a>
+  <a href="#music-section" onclick="closeMobileMenu()">The Glade</a>
+  <a href="/thicket" onclick="closeMobileMenu()">The Thicket</a>
   <a href="#hero" onclick="closeMobileMenu();document.getElementById('hero').scrollIntoView({behavior:'smooth'});return false;">Enter The Glade</a>
 </div>
 
@@ -2505,8 +2614,8 @@
       <p class="section-label">Coming Soon</p>
       <h3 class="glade-heading glade-heading-lg">The Hidden <em>Thicket</em></h3>
       <p class="glade-sub">For those who wish to wander deeper.</p>
-      <p class="glade-body">The Everglade has secrets not meant for the city noise. Join my inner circle of Seekers for unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest.</p>
-      <a href="https://ko-fi.com/tembeh" target="_blank" rel="noopener" class="glade-btn">Join the Seekers</a>
+      <p class="glade-body">The Thicket is being grown — a place for unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest. It isn't ready yet, but it's coming. Join the waiting list to hear when the path opens.</p>
+      <a href="/thicket" class="glade-btn">Join the Seekers</a>
     </div>
   </div>
 </section>
@@ -2514,7 +2623,7 @@
 <!-- Footer -->
 <footer>
   <div class="footer-logo">tembeh</div>
-  <p class="footer-whisper">The music is always playing.</p>
+  <p class="footer-whisper">May the music guide you home.</p>
   <div class="footer-links">
     <a href="/impressum">Impressum</a>
     <a href="/datenschutz">Datenschutz</a>
