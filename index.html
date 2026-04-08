@@ -121,12 +121,138 @@
     overflow: hidden;
   }
 
-  .landing-below {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5rem 2rem;
-    background: linear-gradient(to bottom, #0a0f0b, #0d120e);
+  .landing-below { display: none; }
+
+  /* === THE GLADE (Newsletter + Contact + Thicket) === */
+  .glade-section {
+    position: relative;
+    overflow: hidden;
+  }
+  .glade-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+  .glade-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(to bottom, #0a0f0b 0%, rgba(10,15,11,0.6) 15%, rgba(10,15,11,0.5) 50%, rgba(10,15,11,0.6) 85%, var(--moss) 100%);
+  }
+  .glade-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .glade-content {
+    position: relative;
+    z-index: 3;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8rem 3rem;
+    text-align: center;
+  }
+  .glade-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--morning);
+    margin-bottom: 1rem;
+  }
+  .glade-heading em {
+    color: rgba(210,200,170,0.75);
+  }
+  .glade-heading-lg {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-style: normal;
+  }
+  .glade-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.6);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .glade-body {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(230,220,200,0.65);
+    margin-bottom: 2rem;
+  }
+  .glade-newsletter {
+    margin-bottom: 4rem;
+  }
+  .glade-newsletter .newsletter-row {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .glade-newsletter .newsletter-consent {
+    max-width: 480px;
+    margin: 1rem auto 0;
+  }
+  .glade-contact {
+    margin-bottom: 4rem;
+  }
+  .glade-email {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(230,220,200,0.8);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(210,200,180,0.25);
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+  }
+  .glade-email:hover {
+    color: var(--morning);
+    border-bottom-color: rgba(210,200,180,0.5);
+  }
+  .glade-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(210,200,180,0.2);
+    margin: 0 auto 4rem;
+  }
+  .glade-thicket {
+    margin-bottom: 0;
+  }
+  .glade-btn {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: rgba(230,220,200,0.9);
+    background: rgba(210,200,180,0.08);
+    border: 1px solid rgba(210,200,180,0.25);
+    border-radius: 2rem;
+    padding: 0.8rem 2.2rem;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+    cursor: none;
+  }
+  .glade-btn:hover {
+    background: rgba(210,200,180,0.15);
+    border-color: rgba(210,200,180,0.45);
+    color: var(--morning);
+    transform: translateY(-2px);
+  }
+  @media (max-width: 768px) {
+    .glade-content { padding: 5rem 1.5rem; }
   }
 
   .landing-photo {
@@ -2191,10 +2317,8 @@
   <a href="#" class="nav-logo">tembeh</a>
   <ul class="nav-links">
     <li><a href="#gatherings">Gatherings</a></li>
-    <li><a href="#music-section">Music</a></li>
-    <li><a href="#writing-section">Writing</a></li>
-    <li><a href="#art-section">Art</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#music-section">Letters</a></li>
   </ul>
   <a href="#hero" class="nav-cta" onclick="document.getElementById('hero').scrollIntoView({behavior:'smooth'});return false;">Enter The Glade</a>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
@@ -2205,10 +2329,8 @@
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="#gatherings" onclick="closeMobileMenu()">Gatherings</a>
-  <a href="#music-section" onclick="closeMobileMenu()">Music</a>
-  <a href="#writing-section" onclick="closeMobileMenu()">Writing</a>
-  <a href="#art-section" onclick="closeMobileMenu()">Art</a>
   <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#music-section" onclick="closeMobileMenu()">Letters</a>
   <a href="#hero" onclick="closeMobileMenu();document.getElementById('hero').scrollIntoView({behavior:'smooth'});return false;">Enter The Glade</a>
 </div>
 
@@ -2302,7 +2424,7 @@
   <div class="lore-overlay"></div>
   <div class="lore-particles" id="loreParticles"></div>
   <div class="lore-content reveal" id="about">
-    <p class="section-label">The Lore</p>
+    <p class="section-label">About</p>
     <h2 class="lore-title">The Everglade</h2>
     <div class="lore-body">
       <p>Beyond the reach of the city static lies a sanctuary of ancient light and living resonance. It is a space where the air slows down, and the heavy noise of the world begins to dissolve.</p>
@@ -2318,40 +2440,44 @@
   </div>
 </section>
 
-<!-- Newsletter & Contact -->
-<section class="landing-below">
-  <div class="landing-newsletter">
-    <h3 class="newsletter-heading">Hear the Forest Whisper</h3>
-    <p class="newsletter-subheading">New songs, gathering dates, and quiet dispatches from the Everglade — delivered when the time is right.</p>
-    <form action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank" id="newsletterForm">
-      <div class="newsletter-row">
-        <input type="email" name="EMAIL" placeholder="Your email" required>
-        <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
-        <button type="submit">Listen In</button>
-      </div>
-      <label class="newsletter-consent">
-        <input type="checkbox" id="privacyConsent" required>
-        <span>I agree to the processing of my email address in accordance with the <a href="/datenschutz" target="_blank">privacy policy</a>. I can unsubscribe at any time.</span>
-      </label>
-    </form>
-  </div>
+<!-- The Glade — Newsletter, Contact & Coming Soon -->
+<section class="glade-section" id="music-section">
+  <img src="glade.png" alt="" class="glade-bg">
+  <div class="glade-overlay"></div>
+  <div class="glade-particles" id="gladeParticles"></div>
 
-  <div class="contact-block">
-    <h3 class="contact-title">Summon the Cantora</h3>
-    <p class="contact-text">For live bookings, collaborations, licensing, or simply to send a note through the trees:</p>
-    <a href="mailto:hello@tembeh.world" class="contact-email">hello@tembeh.world</a>
-  </div>
-</section>
+  <div class="glade-content">
+    <div class="glade-newsletter reveal">
+      <h3 class="glade-heading">Letters from the Glade</h3>
+      <p class="glade-body">The Everglade moves to its own rhythm. If you wish to stay in touch, join our circle to receive occasional letters — new music, musings on nature, and stories from the woods — sent only when the light is right.</p>
+      <form action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank" id="newsletterForm">
+        <div class="newsletter-row">
+          <input type="email" name="EMAIL" placeholder="Your email" required>
+          <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
+          <button type="submit">Step Inside</button>
+        </div>
+        <label class="newsletter-consent">
+          <input type="checkbox" id="privacyConsent" required>
+          <span>I agree to the processing of my email address in accordance with the <a href="/datenschutz" target="_blank">privacy policy</a>. I can unsubscribe at any time.</span>
+        </label>
+      </form>
+    </div>
 
-<!-- The Hidden Thicket -->
-<section class="thicket-section" id="music-section">
-  <div class="thicket-particles" id="thicketParticles"></div>
-  <div class="thicket-content reveal">
-    <p class="section-label">Coming Soon</p>
-    <h2 class="thicket-title">The Hidden <em>Thicket</em></h2>
-    <p class="thicket-sub">For those who wish to wander deeper.</p>
-    <p class="thicket-body">The Everglade has secrets not meant for the city noise. Join my inner circle of Seekers for unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest.</p>
-    <a href="https://ko-fi.com/tembeh" target="_blank" rel="noopener" class="thicket-btn">Join the Seekers</a>
+    <div class="glade-contact reveal">
+      <h3 class="glade-heading">Gatherings &amp; Collaborations</h3>
+      <p class="glade-body">For live gatherings, creative alchemy, or to simply share a thought, you are welcome to reach out:</p>
+      <a href="mailto:hello@tembeh.world" class="glade-email">hello@tembeh.world</a>
+    </div>
+
+    <div class="glade-divider"></div>
+
+    <div class="glade-thicket reveal">
+      <p class="section-label">Coming Soon</p>
+      <h3 class="glade-heading glade-heading-lg">The Hidden <em>Thicket</em></h3>
+      <p class="glade-sub">For those who wish to wander deeper.</p>
+      <p class="glade-body">The Everglade has secrets not meant for the city noise. Join my inner circle of Seekers for unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest.</p>
+      <a href="https://ko-fi.com/tembeh" target="_blank" rel="noopener" class="glade-btn">Join the Seekers</a>
+    </div>
   </div>
 </section>
 
@@ -2481,22 +2607,22 @@ if (lopc) {
   }
 }
 
-// Thicket glow particles
-const tpc = document.getElementById('thicketParticles');
-if (tpc) {
-  for (let i = 0; i < 15; i++) {
+// Glade glow particles
+const glpc = document.getElementById('gladeParticles');
+if (glpc) {
+  for (let i = 0; i < 20; i++) {
     const g = document.createElement('div');
     g.className = 'glow-particle';
-    const size = Math.random() * 3 + 1.5;
-    const dur = 6 + Math.random() * 8;
+    const size = Math.random() * 4 + 2;
+    const dur = 5 + Math.random() * 8;
     g.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random()*100}%;
-      top:${15 + Math.random()*70}%;
+      top:${10 + Math.random()*80}%;
       animation-duration:${dur}s;
       animation-delay:${-Math.random()*dur}s;
     `;
-    tpc.appendChild(g);
+    glpc.appendChild(g);
   }
 }
 
