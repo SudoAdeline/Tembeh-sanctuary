@@ -108,9 +108,17 @@
     z-index: 1;
   }
 
-  .landing > *:not(.landing-bg):not(.landing-overlay) {
+  .landing > *:not(.landing-bg):not(.landing-overlay):not(.landing-particles) {
     position: relative;
+    z-index: 3;
+  }
+
+  .landing-particles {
+    position: absolute;
+    inset: 0;
     z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
   }
 
   .landing-below {
@@ -2054,6 +2062,7 @@
 <section class="landing" id="landing">
   <img src="Harp picture.png" alt="Tembeh playing harp" class="landing-bg">
   <div class="landing-overlay"></div>
+  <div class="landing-particles" id="landingParticles"></div>
   <h1 class="landing-name">Tembeh</h1>
   <p class="landing-tagline">musician · artist · creator</p>
 
@@ -2439,6 +2448,25 @@ for (let i = 0; i < 18; i++) {
     animation-delay:${-Math.random()*20}s;
   `;
   pc.appendChild(p);
+}
+
+// Landing glow particles
+const lpc = document.getElementById('landingParticles');
+if (lpc) {
+  for (let i = 0; i < 20; i++) {
+    const g = document.createElement('div');
+    g.className = 'glow-particle';
+    const size = Math.random() * 4 + 2;
+    const dur = 5 + Math.random() * 8;
+    g.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${10 + Math.random()*80}%;
+      animation-duration:${dur}s;
+      animation-delay:${-Math.random()*dur}s;
+    `;
+    lpc.appendChild(g);
+  }
 }
 
 // Gatherings glow particles
