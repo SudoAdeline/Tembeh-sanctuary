@@ -411,103 +411,104 @@
     .landing-newsletter button { width: 100%; }
   }
 
-  /* === HERO === */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  /* === LORE / ABOUT === */
+  .lore-section {
     position: relative;
     overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-
-  .hero-video {
+  .lore-bg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.25;
+    object-position: center;
     z-index: 0;
   }
-
-  .forest-bg {
+  .lore-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
     background:
-      radial-gradient(ellipse 60% 80% at 50% 110%, rgba(74,103,65,0.6) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 20% 100%, rgba(45,59,42,0.9) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 60% at 80% 100%, rgba(45,59,42,0.9) 0%, transparent 60%),
-      linear-gradient(to bottom, #0e1510 0%, #1a2718 40%, #2d3b2a 100%);
+      linear-gradient(to bottom, #0a0f0b 0%, rgba(10,15,11,0.55) 20%, rgba(10,15,11,0.45) 50%, rgba(10,15,11,0.55) 80%, #0a0f0b 100%),
+      radial-gradient(ellipse 70% 50% at 50% 50%, transparent 0%, rgba(10,15,11,0.4) 100%);
   }
-
-  /* SVG Tree silhouettes */
-  .trees {
+  .lore-particles {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .hero-content {
-    position: relative;
+    inset: 0;
     z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .lore-content {
+    position: relative;
+    z-index: 3;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 8rem 3rem;
     text-align: center;
-    padding: 2rem;
   }
-
-  .eyebrow {
-    font-family: 'Karla', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: rise 1.2s ease 0.3s forwards;
-  }
-
-  .hero-title {
+  .lore-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(4rem, 12vw, 10rem);
+    font-size: clamp(3rem, 8vw, 5rem);
     font-weight: 300;
-    line-height: 0.9;
-    letter-spacing: -0.02em;
     color: var(--morning);
-    opacity: 0;
-    animation: rise 1.4s ease 0.6s forwards;
-    margin-bottom: 0.2em;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.3rem;
   }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--lichen);
-  }
-
-  .hero-subtitle {
+  .lore-meaning {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1rem, 2.5vw, 1.6rem);
-    font-weight: 300;
+    font-size: 1.1rem;
     font-style: italic;
-    color: var(--mist);
-    opacity: 0;
-    animation: rise 1.4s ease 0.9s forwards;
+    color: rgba(210,200,170,0.6);
     margin-bottom: 3rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+  }
+  .lore-body {
+    text-align: left;
+  }
+  .lore-body p {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(230,220,200,0.75);
+    margin-bottom: 1.5rem;
+  }
+  .lore-closing {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1.15rem !important;
+    font-style: italic;
+    color: rgba(210,200,170,0.8) !important;
+    margin-top: 2.5rem !important;
+    letter-spacing: 0.03em;
+  }
+  .lore-awards {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .lore-award {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.45);
+    letter-spacing: 0.08em;
+  }
+  .lore-award em {
+    color: rgba(210,200,180,0.65);
+    font-style: normal;
   }
 
-  .hero-actions {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    opacity: 0;
-    animation: rise 1.4s ease 1.2s forwards;
+  @media (max-width: 768px) {
+    .lore-content { padding: 6rem 1.5rem; }
   }
 
   .btn-primary {
@@ -2167,100 +2168,31 @@
   </div>
 </section>
 
-<!-- Hero -->
-<section class="hero" id="hero">
-  <video class="hero-video" autoplay muted loop playsinline>
-    <source src="media/hero-video.mp4" type="video/mp4">
-  </video>
-  <div class="forest-bg"></div>
-
-  <!-- SVG Trees -->
-  <svg class="trees" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <!-- Far trees (lighter) -->
-    <g opacity="0.3" fill="#2d3b2a">
-      <ellipse cx="200" cy="480" rx="70" ry="200"/>
-      <ellipse cx="350" cy="500" rx="55" ry="160"/>
-      <ellipse cx="1100" cy="470" rx="65" ry="190"/>
-      <ellipse cx="1280" cy="495" rx="50" ry="155"/>
-      <rect x="195" y="580" width="10" height="80"/>
-      <rect x="345" y="580" width="8" height="80"/>
-      <rect x="1095" y="580" width="10" height="80"/>
-      <rect x="1275" y="580" width="8" height="80"/>
-    </g>
-    <!-- Mid trees -->
-    <g opacity="0.55" fill="#1e2d1c">
-      <ellipse cx="80" cy="510" rx="80" ry="220"/>
-      <ellipse cx="500" cy="490" rx="90" ry="240"/>
-      <ellipse cx="750" cy="520" rx="60" ry="180"/>
-      <ellipse cx="950" cy="495" rx="85" ry="225"/>
-      <ellipse cx="1380" cy="510" rx="75" ry="215"/>
-      <rect x="74" y="580" width="12" height="60"/>
-      <rect x="493" y="580" width="14" height="60"/>
-      <rect x="745" y="580" width="10" height="60"/>
-      <rect x="943" y="580" width="13" height="60"/>
-      <rect x="1374" y="580" width="12" height="60"/>
-    </g>
-    <!-- Foreground trees (darkest) -->
-    <g opacity="0.85" fill="#0e1510">
-      <ellipse cx="-20" cy="560" rx="100" ry="270"/>
-      <ellipse cx="1460" cy="560" rx="100" ry="270"/>
-      <ellipse cx="300" cy="540" rx="110" ry="280"/>
-      <ellipse cx="1160" cy="540" rx="105" ry="275"/>
-      <rect x="290" y="590" width="20" height="60"/>
-      <rect x="1150" y="590" width="20" height="60"/>
-    </g>
-    <!-- Ground -->
-    <rect x="0" y="590" width="1440" height="20" fill="#0e1510" opacity="0.9"/>
-    <!-- Fireflies / spores -->
-    <g fill="rgba(168,184,154,0.6)">
-      <circle cx="420" cy="380" r="2" opacity="0.4"/>
-      <circle cx="680" cy="340" r="1.5" opacity="0.6"/>
-      <circle cx="890" cy="410" r="2" opacity="0.3"/>
-      <circle cx="1050" cy="360" r="1.5" opacity="0.5"/>
-      <circle cx="580" cy="420" r="2" opacity="0.4"/>
-    </g>
-  </svg>
-
-  <div class="hero-content">
-    <p class="eyebrow">The world of Tembeh</p>
-    <h1 class="hero-title">Of <em>Beautiful</em><br>Hope</h1>
-    <p class="hero-subtitle">Music, writing & visual art — grown in solitude, shared with intention</p>
-    <div class="hero-actions">
-      <a href="#about" class="btn-primary">Step inside</a>
-      <!-- membership link hidden for now -->
+<!-- About / The Lore -->
+<section class="lore-section" id="hero">
+  <img src="lore.png" alt="" class="lore-bg">
+  <div class="lore-overlay"></div>
+  <div class="lore-particles" id="loreParticles"></div>
+  <div class="lore-content reveal" id="about">
+    <p class="section-label">The Cantora</p>
+    <h2 class="lore-title">Tembeh</h2>
+    <p class="lore-meaning">Of Beautiful Hope</p>
+    <div class="lore-body">
+      <p>She grew up in South Africa with a piano under her hands since she was five and a guitar in her lap by thirteen. Classical training gave her the structure. Everything else — the folk, the soul, the quiet ambient hum — she found on her own, writing songs in rooms where no one was listening yet.</p>
+      <p>She left the noise behind. Crossed oceans, landed in Germany, and kept singing. Not because it was easy, but because silence felt worse than starting over. Somewhere between the displacement and the discipline, she found the Everglade — a place where sound is sacred and stillness is not the same as giving up.</p>
+      <p>Now she writes from there. Songs that feel like rooms you're invited into. Melodies that find you before you find them. If you've ever felt muted by the world's static, her music is the frequency that leads you back.</p>
+      <p class="lore-closing">The Everglade belongs to anyone who refused to let the noise win.</p>
     </div>
-  </div>
-
-  <div class="scroll-hint">
-    <span>descend</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- Intro -->
-<section style="background: linear-gradient(to bottom, #0e1510, var(--moss));">
-  <div class="intro" id="about">
-    <div class="intro-text reveal">
-      <p class="section-label">The Artist</p>
-      <h2>Tembeh</h2>
-      <p>is a <span id="tembehAge"></span>-year-old singer-songwriter, pianist and producer based in Germany. Classical piano since five, guitar since thirteen, writing songs ever since. A sound woven from folk, soul and ambient meditation — honest lyrics carried by a voice that's equal parts silk and fire.</p>
-      <p>Born and raised in South Africa, rooted in music, still becoming. Every song is a room you're invited into. Every note, a piece of the truth.</p>
-      <div class="intro-awards">
-        <p class="intro-awards-label">Recognition</p>
-        <div class="intro-award"><em>POP-Stipendium</em> — POP B&Uuml;RO Stuttgart, 2024</div>
-        <div class="intro-award"><em>Songslam Winner</em> — T&uuml;bingen, Oct 2025</div>
-        <div class="intro-award"><em>Songslam Winner</em> — Stuttgart, Mar 2026</div>
-      </div>
-      <a href="#music-section" class="btn-ghost" style="margin-top: 2rem;">Step inside</a>
-    </div>
-    <div class="intro-visual reveal" style="transition-delay: 0.2s;">
-      <img src="media/tembeh-live.jpg" alt="Tembeh performing live" class="intro-photo-main">
+    <div class="lore-awards">
+      <div class="lore-award"><em>POP-Stipendium</em> — POP B&Uuml;RO Stuttgart, 2024</div>
+      <div class="lore-award"><em>Songslam Winner</em> — T&uuml;bingen, 2025</div>
+      <div class="lore-award"><em>Songslam Winner</em> — Stuttgart, 2026</div>
     </div>
   </div>
 </section>
 
 <!-- Music Content Section -->
-<section style="background: linear-gradient(to bottom, #1a2410, #162010);" id="music-section">
+<section style="background: linear-gradient(to bottom, #0a0f0b, #162010);" id="music-section">
   <div class="content-section reveal">
     <h2 class="content-section-title">The <em>Sound</em> Garden</h2>
     <div class="music-grid" id="musicGrid">
@@ -2466,6 +2398,25 @@ if (lpc) {
       animation-delay:${-Math.random()*dur}s;
     `;
     lpc.appendChild(g);
+  }
+}
+
+// Lore glow particles
+const lopc = document.getElementById('loreParticles');
+if (lopc) {
+  for (let i = 0; i < 20; i++) {
+    const g = document.createElement('div');
+    g.className = 'glow-particle';
+    const size = Math.random() * 4 + 2;
+    const dur = 5 + Math.random() * 8;
+    g.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${10 + Math.random()*80}%;
+      animation-duration:${dur}s;
+      animation-delay:${-Math.random()*dur}s;
+    `;
+    lopc.appendChild(g);
   }
 }
 
