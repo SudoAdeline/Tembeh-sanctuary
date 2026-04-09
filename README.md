@@ -1,44 +1,53 @@
-# Of Beautiful Hope — The World of Tembeh
+# The Everglade — tembeh.world
 
-A creative sanctuary by **Tembeh** — music, writing, and visual art grown in solitude, shared with intention. Hosted on Hostinger with a built-in admin panel for managing content directly from the browser.
+Beyond the reach of the city static lies a sanctuary of ancient light and living resonance. This is the digital home of **Tembeh** — musician, artist, creator — built as a single-page experience that feels like stepping into a forest.
 
-## Features
+**[tembeh.world](https://tembeh.world)**
 
-### Public Site
-- **Hero** — Animated forest scene with floating particles, SVG tree silhouettes, and custom cursor
-- **Music** — Track grid with a fully functional audio player (play/pause, seek, progress tracking)
-- **Writing** — Expandable written pieces — click to read, click again to collapse
-- **Art Gallery** — Image and video grid with hover overlays and a full-screen lightbox (keyboard navigation)
-- **Video Support** — Upload and display videos alongside images in the gallery
-- **Membership Tiers** — Wanderer (free) and Member with feature comparison
+## The Site
+
+- **Landing** — Full-screen hero with floating particles, custom cursor, and the harp image
+- **Gatherings** — Upcoming live events, Song Slams, and intimate concerts
+- **The Lore** — Chapter-style storytelling about the Everglade and the Cantora
+- **The Glade** — Newsletter signup, contact, and the gateway to The Hidden Thicket
+- **The Hidden Thicket** — Coming soon page for the inner sanctuary (superfan space)
+- **The Vault** — Music player, writing pieces, and art gallery with lightbox
 
 ### Admin Panel
 Access via **triple-click** on the footer logo or **Ctrl+Shift+A**.
 
-- Upload music tracks (MP3/WAV) with cover art, title, artist, and description
-- Upload images and videos to the art gallery
-- Add writing pieces with title, date, and body text
-- Edit and delete any content
-- Password protected — bcrypt hashing via PHP, with localStorage fallback
-- **Dual storage** — content saves to both the server (PHP/JSON) and the browser (localStorage), so content always appears even if the server has issues
+- Upload music (MP3/WAV) with cover art, title, and description
+- Add writing pieces and art/video to the gallery
+- Edit and delete content
+- Password protected with bcrypt hashing
 
 ## Project Structure
 
 ```
-index.html          — The full site (HTML/CSS/JS)
-admin-api.php       — PHP backend for uploads and content management
+index.html              — The full site (HTML/CSS/JS)
+thicket/index.html      — The Hidden Thicket coming soon page
+admin-api.php           — PHP backend for uploads and content management
+datenschutz/index.html  — Privacy policy (DSGVO)
+impressum/index.html    — Legal notice
 data/
-  music.json        — Music track metadata
-  writing.json      — Writing pieces
-  art.json          — Art gallery metadata
+  music.json            — Music track metadata
+  writing.json          — Writing pieces
+  art.json              — Art gallery metadata
 media/
-  music/            — Audio files and cover images
-  art/              — Images and videos
-.htaccess           — Security and upload config
-.user.ini           — PHP upload limits (512MB)
+  music/                — Audio files and cover images
+  art/                  — Images and videos
 ```
 
-## Deployment (Hostinger)
+## Tech Stack
+
+- **HTML/CSS/JS** — Single-page, no frameworks, no build step
+- **PHP** — Backend API for file uploads and JSON storage
+- **localStorage** — Browser-side persistence as fallback
+- **Hostinger** — Shared hosting with PHP support
+- Fonts: Cormorant Garamond + Karla
+- Custom cursor, scroll-reveal animations, floating particles, responsive design
+
+## Deployment
 
 1. Upload all files to `public_html` on Hostinger
 2. Visit your domain
@@ -46,37 +55,9 @@ media/
 4. Set your password on first visit
 5. Start uploading content
 
-## Adding Content
-
-All content is managed through the admin panel in the browser:
-
-1. Open the admin panel on your live site
-2. Choose a tab (Music, Writing, or Art)
-3. Fill in the details and select your file
-4. Click save — content saves to your browser immediately and syncs to the server
-
-## How Data Storage Works
-
-Content is saved in two places for reliability:
-
-- **localStorage (browser)** — instant, always works, data persists in your browser
-- **PHP backend (server)** — saves to JSON files on the server for cross-device access
-
-When the site loads, it checks the server first. If the server has content, it syncs to localStorage. If the server is unavailable, it falls back to whatever is stored in the browser.
-
-## Tech Stack
-
-- **HTML/CSS/JS** — Single-page, no frameworks
-- **PHP** — Backend API for file uploads and JSON management
-- **localStorage** — Browser-side persistence for reliability
-- **Hostinger** — Shared hosting with PHP support
-- Forest/botanical theme with custom cursor, scroll animations, and responsive layout
-
 ## Artist
 
-Created by **Tembeh** — a multidisciplinary artist working across sound, word, and image.
-
-**[tembeh.world](https://tembeh.world)**
+Created by **Tembeh** — a multidisciplinary artist working across sound, word, and image. Based in Germany, rooted in nature, building from the quiet.
 
 ## License
 
