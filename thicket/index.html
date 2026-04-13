@@ -258,6 +258,25 @@
     color: var(--morning);
   }
 
+  .thicket-list {
+    text-align: left;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .thicket-list strong {
+    color: rgba(210,200,170,0.85);
+    font-weight: 400;
+  }
+  .thicket-closing {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.6);
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.04em;
+  }
+
   /* Floating particles */
   .particles { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
   .particle {
@@ -292,23 +311,32 @@
   <div class="thicket-overlay"></div>
 
   <div class="thicket-card">
-    <p class="thicket-label">Coming Soon</p>
-    <h1 class="thicket-title">The Hidden <em>Thicket</em></h1>
-    <p class="thicket-sub">A sanctuary for those who wander deeper.</p>
+    <p class="thicket-label">🌿 The Hidden Thicket</p>
+    <h1 class="thicket-title">The path is open.</h1>
+    <p class="thicket-sub">The Whisper has found you.</p>
 
     <p class="thicket-body">
-      The Thicket is still being grown — roots reaching into the dark soil, branches weaving a canopy of unreleased melodies, handwritten fragments, and visual diaries from the heart of the forest. A place where the Seekers gather, away from the noise, closer to the source.
+      Step through the overgrowth to enter The Everglade. This is our sanctuary on Discord — a living forest where you can connect directly with the Spirit Realms and the Song-Keeper.
     </p>
+
+    <p class="thicket-body thicket-list">
+      Inside, we share:<br><br>
+      <strong>The Spirits:</strong> Dedicated spaces for grounding, dreaming, and release.<br><br>
+      <strong>The Hearth:</strong> Announcements for local gatherings and community festivals.<br><br>
+      <strong>The Discourse:</strong> Real-time connection with a clan of fellow Seekers.
+    </p>
+
+    <p class="thicket-closing">The Thicket is parting. Join the gathering.</p>
 
     <div class="thicket-divider"></div>
 
-    <p class="thicket-notify">Be the first to know when the path opens.</p>
+    <p class="thicket-notify">Enter your email to step through.</p>
 
-    <form class="thicket-form" action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank">
+    <form class="thicket-form" id="thicket-gate" action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank">
       <div class="form-row">
         <input type="email" name="EMAIL" placeholder="Your email" required>
         <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
-        <button type="submit">Notify Me</button>
+        <button type="submit">Enter the Everglade</button>
       </div>
       <label class="form-consent">
         <input type="checkbox" required>
@@ -319,6 +347,15 @@
 </section>
 
 <script>
+// Email gate → Discord redirect
+const form = document.getElementById('thicket-gate');
+form.addEventListener('submit', function() {
+  // Small delay to let the Mailchimp submission go through, then redirect to Discord
+  setTimeout(function() {
+    window.location.href = 'https://discord.gg/HuepPPnr';
+  }, 800);
+});
+
 // Floating particles
 const pc = document.getElementById('particles');
 for (let i = 0; i < 20; i++) {
