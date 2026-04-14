@@ -370,6 +370,262 @@
     padding-top: 1.5rem;
   }
 
+  /* === GATE OVERLAY === */
+  .gate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: #0a0f0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+  }
+  .gate-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .gate-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.35) saturate(0.6);
+    z-index: 0;
+  }
+  .gate-card {
+    position: relative;
+    z-index: 2;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    padding: 3.5rem 2.5rem;
+  }
+  .gate-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    color: var(--morning);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .gate-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.5);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+  .gate-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(230,220,200,0.55);
+    margin-bottom: 2.5rem;
+  }
+  .gate-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .gate-form .form-row {
+    display: flex;
+    gap: 0;
+    max-width: 380px;
+    width: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(210,200,180,0.2);
+    background: rgba(20,28,19,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .gate-form .form-row:focus-within {
+    border-color: rgba(210,200,180,0.4);
+    box-shadow: 0 0 30px rgba(168,184,154,0.08);
+  }
+  .gate-form input[type="email"],
+  .gate-form input[type="password"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    padding: 0.9rem 1.3rem;
+    outline: none;
+    letter-spacing: 0.02em;
+  }
+  .gate-form input::placeholder {
+    color: rgba(210,200,180,0.35);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+  }
+  .gate-form button {
+    background: rgba(210,200,180,0.1);
+    color: rgba(230,220,200,0.85);
+    border: none;
+    border-left: 1px solid rgba(210,200,180,0.15);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.88rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    padding: 0.9rem 1.6rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+  }
+  .gate-form button:hover {
+    background: rgba(210,200,180,0.2);
+    color: var(--morning);
+  }
+  .gate-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 380px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .gate-consent input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    border: 1px solid rgba(210,200,180,0.3);
+    border-radius: 3px;
+    background: rgba(20,28,19,0.5);
+    cursor: pointer;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+  .gate-consent input[type="checkbox"]:checked {
+    background: rgba(210,200,170,0.3);
+    border-color: rgba(210,200,180,0.6);
+  }
+  .gate-consent input[type="checkbox"]:checked::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 7px;
+    border: solid var(--morning);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    margin: 1px auto 0;
+  }
+  .gate-consent span {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.4);
+    line-height: 1.5;
+  }
+  .gate-consent a {
+    color: rgba(210,200,180,0.6);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .gate-divider {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.3);
+    margin: 0.5rem 0;
+    letter-spacing: 0.1em;
+  }
+  .gate-error {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    color: rgba(200,120,100,0.7);
+    min-height: 1.2em;
+    margin-top: 0.3rem;
+  }
+  .gate-success {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: rgba(168,184,154,0.7);
+    margin-top: 0.5rem;
+  }
+
+  /* Admin password setter */
+  .admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: rgba(10,15,11,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .admin-modal.show { display: flex; }
+  .admin-box {
+    background: rgba(30,40,28,0.9);
+    border: 1px solid rgba(210,200,180,0.15);
+    border-radius: 8px;
+    padding: 2.5rem;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+  }
+  .admin-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--morning);
+    margin-bottom: 1.2rem;
+  }
+  .admin-box input {
+    width: 100%;
+    background: rgba(20,28,19,0.5);
+    border: 1px solid rgba(210,200,180,0.2);
+    border-radius: 6px;
+    color: var(--morning);
+    font-family: 'Karla', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.8rem 1rem;
+    outline: none;
+    margin-bottom: 0.8rem;
+  }
+  .admin-box button {
+    background: rgba(210,200,180,0.12);
+    color: var(--morning);
+    border: 1px solid rgba(210,200,180,0.2);
+    border-radius: 6px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    padding: 0.7rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0.3rem;
+  }
+  .admin-box button:hover { background: rgba(210,200,180,0.2); }
+  .admin-msg {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    color: rgba(168,184,154,0.6);
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+  }
+
+  @media (max-width: 860px) {
+    .gate-card { padding: 2.5rem 1.5rem; }
+    .gate-form .form-row { flex-direction: column; border-radius: 1rem; }
+    .gate-form button { width: 100%; border-left: none; border-top: 1px solid rgba(210,200,180,0.15); }
+  }
+
   /* Particles */
   .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
   .particle {
@@ -416,6 +672,53 @@
 </style>
 </head>
 <body>
+
+<!-- Gate Overlay -->
+<div class="gate-overlay" id="gate">
+  <img src="/glade.png" alt="" class="gate-bg">
+  <div class="gate-card">
+    <h1 class="gate-title">The Seekers' Journey</h1>
+    <p class="gate-sub">A Guide into Everglade</p>
+    <p class="gate-body">This ancient text is kept within the roots of the Thicket, shared only with those who have pledged their name to the forest. Enter your email to join the Seekers' circle, or speak the passphrase if you have already been welcomed.</p>
+
+    <div class="gate-form" id="gateForm">
+      <!-- Email signup -->
+      <form id="emailGate" action="https://world.us6.list-manage.com/subscribe/post?u=94342f5b090356433d135403a&amp;id=35b5292048&amp;f_id=0095c2e1f0" method="POST" target="_blank" style="width:100%;display:flex;flex-direction:column;align-items:center;">
+        <div class="form-row">
+          <input type="email" name="EMAIL" placeholder="Your email" required>
+          <div style="position:absolute;left:-5000px;" aria-hidden="true"><input type="text" name="b_94342f5b090356433d135403a_35b5292048" tabindex="-1" value=""></div>
+          <button type="submit">Join &amp; Enter</button>
+        </div>
+        <label class="gate-consent">
+          <input type="checkbox" required>
+          <span>I agree to the processing of my email in accordance with the <a href="/datenschutz" target="_blank">privacy policy</a>.</span>
+        </label>
+      </form>
+
+      <p class="gate-divider">— or enter with the passphrase —</p>
+
+      <!-- Password entry -->
+      <div class="form-row">
+        <input type="password" id="passInput" placeholder="Speak the passphrase..." onkeydown="if(event.key==='Enter')checkPass()">
+        <button type="button" onclick="checkPass()">Enter</button>
+      </div>
+      <p class="gate-error" id="gateError"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Admin: Set Password (Ctrl+Shift+P) -->
+<div class="admin-modal" id="adminModal">
+  <div class="admin-box">
+    <h3>Set Journey Passphrase</h3>
+    <input type="password" id="adminPass" placeholder="New passphrase">
+    <div>
+      <button onclick="setPass()">Save</button>
+      <button onclick="document.getElementById('adminModal').classList.remove('show')">Close</button>
+    </div>
+    <p class="admin-msg" id="adminMsg"></p>
+  </div>
+</div>
 
 <a href="/" class="back-link">&larr; Back to the Glade</a>
 <div class="particles" id="particles"></div>
@@ -739,6 +1042,67 @@ for (var i = 0; i < 12; i++) {
 }
 
 showSpread(0);
+
+// === GATE LOGIC ===
+var PASS_KEY = 'everglade_journey_pass';
+var UNLOCKED_KEY = 'everglade_journey_unlocked';
+
+// Check if already unlocked this session
+if (sessionStorage.getItem(UNLOCKED_KEY)) {
+  document.getElementById('gate').classList.add('hidden');
+}
+
+// Email form: subscribe then unlock
+document.getElementById('emailGate').addEventListener('submit', function() {
+  sessionStorage.setItem(UNLOCKED_KEY, '1');
+  setTimeout(function() {
+    document.getElementById('gate').classList.add('hidden');
+  }, 600);
+});
+
+// Password check
+function checkPass() {
+  var input = document.getElementById('passInput').value;
+  var stored = localStorage.getItem(PASS_KEY);
+  if (!stored) {
+    document.getElementById('gateError').textContent = 'No passphrase has been set yet.';
+    return;
+  }
+  if (input === stored) {
+    sessionStorage.setItem(UNLOCKED_KEY, '1');
+    document.getElementById('gate').classList.add('hidden');
+  } else {
+    document.getElementById('gateError').textContent = 'The forest does not recognize this whisper.';
+    document.getElementById('passInput').value = '';
+  }
+}
+
+// Admin: set password with Ctrl+Shift+P
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+    e.preventDefault();
+    document.getElementById('adminModal').classList.add('show');
+    document.getElementById('adminPass').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('adminModal').classList.remove('show');
+  }
+});
+
+function setPass() {
+  var val = document.getElementById('adminPass').value.trim();
+  if (val.length < 3) {
+    document.getElementById('adminMsg').textContent = 'Passphrase must be at least 3 characters.';
+    return;
+  }
+  localStorage.setItem(PASS_KEY, val);
+  document.getElementById('adminMsg').textContent = 'Passphrase saved.';
+  document.getElementById('adminPass').value = '';
+  setTimeout(function() {
+    document.getElementById('adminModal').classList.remove('show');
+    document.getElementById('adminMsg').textContent = '';
+  }, 1200);
+}
 </script>
 </body>
 </html>
