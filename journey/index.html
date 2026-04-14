@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Seekers' Journey — A Guide into Everglade</title>
 <meta name="description" content="An ancient guide into the Everglade. Penned by the Song-Keeper for those who hear the whisper.">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
     --parchment: #f4e4c1;
@@ -194,18 +194,14 @@
   .page-inner {
     position: absolute;
     inset: 0;
-    padding: 2.8rem 2.5rem;
-    overflow-y: auto;
+    padding: 2.2rem 2.2rem;
+    overflow: hidden;
     z-index: 1;
-    scrollbar-width: thin;
-    scrollbar-color: var(--parchment-edge) transparent;
+    display: flex;
+    flex-direction: column;
   }
-  .page-inner::-webkit-scrollbar { width: 3px; }
-  .page-inner::-webkit-scrollbar-track { background: transparent; }
-  .page-inner::-webkit-scrollbar-thumb { background: var(--parchment-edge); border-radius: 2px; }
-
-  .book-page.left .page-inner { padding-right: 2rem; }
-  .book-page.right .page-inner { padding-left: 2rem; }
+  .book-page.left .page-inner { padding-right: 1.8rem; }
+  .book-page.right .page-inner { padding-left: 1.8rem; }
 
   /* Spread container */
   .spread {
@@ -302,16 +298,17 @@
   .page-num {
     text-align: center;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-style: italic;
     color: rgba(80,50,20,0.3);
-    margin-top: 2rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
     letter-spacing: 0.1em;
   }
 
   /* ===== Typography ===== */
   .chapter-title {
-    font-family: 'Cinzel Decorative', serif;
+    font-family: 'Cinzel', serif;
     font-size: clamp(1.5rem, 3vw, 2.2rem);
     color: var(--ink);
     text-align: center;
@@ -320,34 +317,34 @@
   }
   .divider {
     text-align: center;
-    margin: 1rem 0 1.5rem;
+    margin: 0.6rem 0 1rem;
     color: var(--ink-faded);
     font-size: 0.7rem;
     letter-spacing: 0.5em;
     opacity: 0.3;
   }
   .section-heading {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
     color: var(--ink);
-    margin: 1.8rem 0 0.6rem;
+    margin: 1.2rem 0 0.4rem;
     line-height: 1.3;
   }
   .field-note-heading {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.95rem, 2.2vw, 1.2rem);
     color: var(--ink);
     text-align: center;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.8rem;
     line-height: 1.3;
   }
   .body-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 400;
-    line-height: 1.85;
+    line-height: 1.7;
     color: var(--ink-light);
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.6rem;
     text-align: justify;
     text-indent: 1.3em;
   }
@@ -355,38 +352,38 @@
   .body-text.no-indent { text-indent: 0; }
   .quote-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-style: italic;
     font-weight: 300;
     color: var(--ink);
     text-align: center;
-    margin: 1.5rem 0.5rem;
-    line-height: 1.8;
+    margin: 1rem 0.5rem;
+    line-height: 1.7;
   }
   .field-label {
     font-family: 'Karla', sans-serif;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 400;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink-faded);
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.15rem;
   }
   .field-value {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.92rem;
+    font-size: 0.82rem;
     font-style: italic;
     color: var(--ink-light);
-    margin-bottom: 0.9rem;
-    line-height: 1.6;
+    margin-bottom: 0.6rem;
+    line-height: 1.5;
   }
   .note-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.88rem;
+    font-size: 0.8rem;
     font-style: italic;
     color: var(--ink-faded);
-    line-height: 1.75;
-    margin-bottom: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0.6rem;
     padding-left: 0.8rem;
     border-left: 2px solid rgba(80,50,20,0.15);
   }
@@ -437,7 +434,7 @@
     min-height: 100%;
   }
   .cover-title {
-    font-family: 'Cinzel Decorative', serif;
+    font-family: 'Cinzel', serif;
     font-size: clamp(1.8rem, 4vw, 2.8rem);
     color: var(--ink);
     margin-bottom: 0.4rem;
@@ -499,7 +496,7 @@
     padding: 3.5rem 2.5rem;
   }
   .gate-title {
-    font-family: 'Cinzel Decorative', serif;
+    font-family: 'Cinzel', serif;
     font-size: clamp(1.8rem, 5vw, 2.6rem);
     color: var(--morning);
     margin-bottom: 0.5rem;
@@ -758,12 +755,12 @@
     .book-page.right::after { display: none; }
     .book-page.left::before { border-radius: 6px 6px 0 0; }
     .book-page.right::before { border-radius: 0 0 6px 6px; }
-    .page-inner { padding: 2rem 1.6rem; }
+    .page-inner { padding: 2rem 1.6rem; position: relative; overflow: visible; }
     .nav-arrow { width: 44px; height: 44px; font-size: 1.3rem; }
     .nav-arrow.prev { left: 0.5rem; }
     .nav-arrow.next { right: 0.5rem; }
     .back-link { top: 0.8rem; left: 0.8rem; font-size: 0.85rem; }
-    .body-text { font-size: 0.92rem; text-align: left; }
+    .body-text { font-size: 0.88rem; text-align: left; }
     .flip-overlay { display: none !important; }
   }
 </style>
@@ -1096,7 +1093,15 @@ var flipping = false;
 function showSpread(index) {
   spreads.forEach(function(s) { s.classList.remove('active'); });
   spreads[index].classList.add('active');
-  spreads[index].querySelectorAll('.page-inner').forEach(function(p) { p.scrollTop = 0; });
+  // Re-fit the newly visible pages
+  spreads[index].querySelectorAll('.page-inner').forEach(function(inner) {
+    inner.style.fontSize = '';
+    var scale = 100;
+    while (inner.scrollHeight > inner.clientHeight + 2 && scale > 70) {
+      scale -= 2;
+      inner.style.fontSize = scale + '%';
+    }
+  });
   current = index;
   document.getElementById('prevBtn').disabled = current === 0;
   document.getElementById('nextBtn').disabled = current === total - 1;
@@ -1183,7 +1188,28 @@ for (var i = 0; i < 12; i++) {
   pc.appendChild(p);
 }
 
+// Auto-fit: scale down page content if it overflows
+function fitPages() {
+  document.querySelectorAll('.page-inner').forEach(function(inner) {
+    // Reset any previous scale
+    inner.style.fontSize = '';
+    var scale = 100;
+    // Shrink font size until content fits (min 70%)
+    while (inner.scrollHeight > inner.clientHeight + 2 && scale > 70) {
+      scale -= 2;
+      inner.style.fontSize = scale + '%';
+    }
+  });
+}
+
 showSpread(0);
+// Fit after fonts load
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(fitPages);
+} else {
+  setTimeout(fitPages, 300);
+}
+window.addEventListener('resize', fitPages);
 
 // === GATE LOGIC ===
 var PASS_KEY = 'everglade_journey_pass';
