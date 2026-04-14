@@ -59,35 +59,46 @@
     z-index: 100;
   }
 
+  /* === NAV ARROWS — more visible === */
   .nav-arrow {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
     z-index: 100;
-    background: none;
-    border: 1px solid rgba(210,200,180,0.2);
-    color: rgba(210,200,180,0.5);
-    width: 40px;
-    height: 40px;
+    background: rgba(210,200,180,0.1);
+    border: 1.5px solid rgba(210,200,180,0.35);
+    color: rgba(210,200,180,0.8);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Cormorant Garamond', serif;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
   }
   .nav-arrow:hover {
-    border-color: rgba(210,200,180,0.5);
+    border-color: rgba(210,200,180,0.7);
     color: var(--morning);
-    background: rgba(210,200,180,0.08);
+    background: rgba(210,200,180,0.18);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    transform: translateY(-50%) scale(1.08);
   }
-  .nav-arrow.prev { left: 1rem; }
-  .nav-arrow.next { right: 1rem; }
-  .nav-arrow:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
+  .nav-arrow.prev { left: 1.2rem; }
+  .nav-arrow.next { right: 1.2rem; }
+  .nav-arrow:disabled { opacity: 0.12; cursor: default; pointer-events: none; }
 
   /* === OPEN BOOK === */
+  .book-wrapper {
+    perspective: 2200px;
+    -webkit-perspective: 2200px;
+  }
+
   .book {
     display: flex;
     width: 92vw;
@@ -97,6 +108,7 @@
     position: relative;
     box-shadow: 0 8px 60px rgba(0,0,0,0.5), 0 2px 20px rgba(0,0,0,0.3);
     border-radius: 6px;
+    transform-style: preserve-3d;
   }
 
   /* Spine */
@@ -195,13 +207,96 @@
   .book-page.left .page-inner { padding-right: 2rem; }
   .book-page.right .page-inner { padding-left: 2rem; }
 
-  /* Spread container for transitions */
+  /* Spread container */
   .spread {
     display: none;
     width: 100%;
     height: 100%;
   }
   .spread.active { display: flex; }
+
+  /* === PAGE FLIP OVERLAY === */
+  .flip-overlay {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 50;
+    transform-style: preserve-3d;
+    pointer-events: none;
+    display: none;
+  }
+  .flip-overlay.flipping { display: block; }
+
+  .flip-overlay.forward {
+    right: 0;
+    transform-origin: left center;
+  }
+  .flip-overlay.backward {
+    left: 0;
+    transform-origin: right center;
+  }
+
+  .flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+  }
+  .flip-face.front {
+    background:
+      radial-gradient(ellipse at 20% 25%, rgba(139,111,60,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 75% 80%, rgba(120,90,40,0.06) 0%, transparent 45%),
+      linear-gradient(135deg, #f4e4c1 0%, #eedcb0 25%, #f0e0b8 50%, #e8d5a3 75%, #f2debb 100%);
+    background-color: var(--parchment);
+  }
+  .flip-face.back {
+    transform: rotateY(180deg);
+    background:
+      radial-gradient(ellipse at 20% 25%, rgba(139,111,60,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 75% 80%, rgba(120,90,40,0.06) 0%, transparent 45%),
+      linear-gradient(135deg, #f4e4c1 0%, #eedcb0 25%, #f0e0b8 50%, #e8d5a3 75%, #f2debb 100%);
+    background-color: var(--parchment);
+  }
+
+  /* Page curl shadow that follows the flip */
+  .flip-shadow {
+    position: absolute;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    z-index: 51;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .flip-overlay.forward .flip-shadow {
+    left: -80px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.03));
+  }
+  .flip-overlay.backward .flip-shadow {
+    right: -80px;
+    background: linear-gradient(to left, transparent, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.03));
+  }
+
+  /* Curl highlight on the page edge */
+  .flip-highlight {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .flip-overlay.forward .flip-highlight {
+    left: 0;
+    background: linear-gradient(to right, rgba(255,255,255,0.15), transparent);
+  }
+  .flip-overlay.backward .flip-highlight {
+    right: 0;
+    background: linear-gradient(to left, rgba(255,255,255,0.15), transparent);
+  }
 
   /* Page number at bottom */
   .page-num {
@@ -664,10 +759,12 @@
     .book-page.left::before { border-radius: 6px 6px 0 0; }
     .book-page.right::before { border-radius: 0 0 6px 6px; }
     .page-inner { padding: 2rem 1.6rem; }
+    .nav-arrow { width: 44px; height: 44px; font-size: 1.3rem; }
     .nav-arrow.prev { left: 0.5rem; }
     .nav-arrow.next { right: 0.5rem; }
     .back-link { top: 0.8rem; left: 0.8rem; font-size: 0.85rem; }
     .body-text { font-size: 0.92rem; text-align: left; }
+    .flip-overlay { display: none !important; }
   }
 </style>
 </head>
@@ -723,10 +820,19 @@
 <a href="/" class="back-link">&larr; Back to the Glade</a>
 <div class="particles" id="particles"></div>
 
-<button class="nav-arrow prev" id="prevBtn" onclick="flipPage(-1)" disabled>&lsaquo;</button>
-<button class="nav-arrow next" id="nextBtn" onclick="flipPage(1)">&rsaquo;</button>
+<button class="nav-arrow prev" id="prevBtn" onclick="flipPage(-1)" disabled>&#8249;</button>
+<button class="nav-arrow next" id="nextBtn" onclick="flipPage(1)">&#8250;</button>
 
+<div class="book-wrapper">
 <div class="book" id="book">
+
+  <!-- Flip overlay for page turn animation -->
+  <div class="flip-overlay" id="flipOverlay">
+    <div class="flip-face front"></div>
+    <div class="flip-face back"></div>
+    <div class="flip-shadow"></div>
+    <div class="flip-highlight"></div>
+  </div>
 
   <!-- Spread 0: Cover + Dedication -->
   <div class="spread active" data-spread="0">
@@ -840,22 +946,20 @@
         <p class="chapter-title">Arborhaven</p>
         <div class="divider">&#8226; &ensp; &#8226; &ensp; &#8226;</div>
 
-        <p class="body-text no-indent">When the dance of the Glade finally settles and your heart craves the quiet weight of the earth, you follow the scent of damp bark and ancient wisdom. The golden light of the bronze fields begins to soften, turning into a deep, velvety emerald. You are leaving the open sky to enter the sanctuary of the roots.</p>
-
-        <p class="body-text">Arborhaven is a realm of colossal, ancient trees whose branches are so heavy with time they bow to touch the floor. Here, the air is still and cool, tasting of rain and minerals. The ground is not dirt, but a thick, undulating bed of emerald moss that feels like a living quilt. Beneath this emerald layer, a network of mycelia weaves through the soil, pulsing with a soft bioluminescent glow. This faint blue and silver light breathes from the earth itself, illuminating the hidden paths between the trunks.</p>
+        <p class="body-text no-indent">When the Glade's dance settles and you crave the earth's quiet weight, follow the scent of damp bark into the sanctuary of the roots. Here, ancient trees bow under the weight of time, and the air tastes of rain and minerals. You walk upon a living quilt of emerald moss, beneath which a bioluminescent mycelial network pulses with a soft, silver-blue glow.</p>
 
         <h3 class="section-heading">The Ritual of Truth</h3>
-        <p class="body-text no-indent">Arborhaven is the place of Being. If the Glade is where we share our stories, Arborhaven is where we discover if those stories are true. Here, the "Seeker's Ritual" begins: you are invited to shed the leather and rubber of the outside world—to take off your shoes and press your bare soles into the cushioned moss. As you sink into the warmth of the earth, the noise of your mind fades.</p>
+        <p class="body-text no-indent">Arborhaven is the place of Being. It is here we discover if our stories are true. You are invited to shed the shoes of the outside world and press your bare soles into the warm, cushioned moss. As you connect with the soil, the noise of the mind fades into the steady rhythm of the earth.</p>
 
         <h3 class="section-heading">The Earth Spirits</h3>
-        <p class="body-text no-indent">This realm is tended by the Earth Spirits. They are slow, steady guardians, moving with the grace of shifting tectonic plates. They do not speak in words, but in the creaking of timber and the subtle vibration of the ground. They are the keepers of wisdom, guiding every Seeker to find their own "root."</p>
+        <p class="body-text no-indent">Tended by the Earth Spirits, this realm moves with the grace of shifting tectonic plates. They speak not in words, but in the creaking of timber and the vibration of the ground. These steady guardians hold the forest's wisdom, guiding every Seeker to find their own roots.</p>
 
         <p class="page-num">6</p>
       </div>
     </div>
     <div class="book-page right">
       <div class="page-inner">
-        <p class="field-note-heading">Field Notes</p>
+        <p class="field-note-heading">Field Notes — Arborhaven</p>
 
         <p class="field-label">Status</p>
         <p class="field-value">The Deep Root</p>
@@ -864,18 +968,16 @@
         <p class="field-value">Deep Moss Green, Loamy Brown, Bioluminescent Teal.</p>
 
         <h3 class="section-heading">The Character</h3>
-        <p class="body-text no-indent">Everything moves slower here. The air is thick with the scent of damp bark and quietude. The energy is slow-paced, sleepy, and profoundly wise. It's the feeling of a heavy wool blanket or the half-moment before falling into a dream. In Arborhaven, time doesn't tick; it breathes.</p>
+        <p class="body-text no-indent">The air is thick with the scent of damp bark and quietude. The energy is slow-paced, sleepy, and profoundly wise. It's the feeling of a heavy wool blanket or the half-moment before falling into a dream. In Arborhaven, time doesn't tick; it breathes.</p>
 
         <h3 class="section-heading">The Animal: The Mouse</h3>
-        <p class="body-text no-indent">The Mouse is the humble guardian of the undergrowth. While the rest of the world looks up, the mouse knows the secrets of the soil.</p>
-
-        <p class="note-text">To see a mouse is to be reminded that the smallest details hold the most wisdom. They are the keepers of the "hush." If one appears, it's time to lower your pulse and listen to what the silence is trying to tell you.</p>
+        <p class="body-text no-indent">The Mouse is the humble guardian of the undergrowth. While the rest of the world looks up, the mouse knows the secrets of the soil. They navigate the labyrinth of roots with quiet confidence.</p>
 
         <p class="field-label">Form</p>
-        <p class="field-value">Bioluminescent Fly Agaric — the "streetlights" for the Earth Spirits, casting a gentle glow on the mossy floor.</p>
+        <p class="field-value">Bioluminescent Fly Agaric — The lanterns of Arborhaven aren't fire, but Funghi. The Fly Agaric mushrooms here have traded their traditional red for a soft, pulsing bioluminescence.</p>
 
         <p class="field-label">Symbol</p>
-        <p class="field-value">Moss — the skin of the earth. Tactile, ancient, and forgiving.</p>
+        <p class="field-value">Moss — the sigil of this realm. It is the skin of the earth—tactile, ancient, and forgiving. It holds the warmth of the life below and cushions the heavy hearts of those above.</p>
 
         <p class="page-num">7</p>
       </div>
@@ -889,38 +991,41 @@
         <p class="chapter-title">River of Memories</p>
         <div class="divider">&#8226; &ensp; &#8226; &ensp; &#8226;</div>
 
-        <p class="body-text no-indent">To reach the water, you must follow the gentle slope where the moss of Arborhaven meets the damp stones of the shore. As the bioluminescent glow of the roots fades behind you, the air begins to shimmer with a silver light, and the silence of the earth is replaced by the rhythmic, liquid pulse of the Everglade's lifeblood.</p>
+        <p class="body-text no-indent">As the roots' glow fades, the earth's silence gives way to a rhythmic, liquid pulse. The River is a ribbon of starlight flowing over obsidian stones polished by an eternity of sighs. Under a perpetual night sky, the air is cool and mist-laden, carrying the breath of a current that has traveled from the beginning of time.</p>
 
-        <p class="body-text">The River of Memories is a ribbon of liquid starlight winding through the deep shadows of the forest. Its waters are impossibly clear, flowing over smooth, obsidian stones that have been polished by an eternity of sighs. Above, the canopy thins just enough to reveal a perpetual night sky, where the Moon and the Stars hang low and heavy, their reflection dancing upon the surface like shattered diamonds.</p>
+        <h3 class="section-heading">The Purpose: The Great Release</h3>
+        <p class="body-text no-indent">Here, the heavy burdens and "claws" of the outside world are unraveled. This is a sanctuary for grief and hidden sorrows. You are invited to sit by the bank and let the current take what you can no longer carry. In this water, there is no judgment—only the grace of being allowed to feel.</p>
 
-        <h3 class="section-heading">The Great Release</h3>
-        <p class="body-text no-indent">Life outside the Everglade is heavy; it leaves claws in the heart and shadows in the mind. The River is where those burdens are finally unraveled. This is the place of Emotional Alchemy. It is a sanctuary for the feelings we were told to hide: the grief, the mourning, and the heavy weight of what has been lost. Here, you are invited to sit by the bank and let the current take what you can no longer carry.</p>
-
-        <h3 class="section-heading">The Water Sprites &amp; The Celestial Watchers</h3>
-        <p class="body-text no-indent">In this vulnerability, you are never alone. The Water Sprites live within the flow, shimmering forms of light and fluid grace. They move toward your sorrow, catching your tears and weaving them into the eternal waters. From above, the Moon and the Stars act as silent guardians, holding the space with a steady, silvery light that feels like a hand on your shoulder.</p>
+        <h3 class="section-heading">The Inhabitants: Water Sprites &amp; Celestial Watchers</h3>
+        <p class="body-text no-indent">You are never alone in your vulnerability. Shimmering Water Sprites move toward your sorrow, catching your tears to be purified in the eternal flow. Above, the Moon and Stars act as silent guardians, their silver light like a hand on your shoulder, assuring you that as you let go, you are held.</p>
 
         <p class="page-num">8</p>
       </div>
     </div>
     <div class="book-page right">
       <div class="page-inner">
-        <p class="field-note-heading">Field Notes</p>
+        <p class="field-note-heading">Field Notes — River of Memories</p>
 
         <p class="field-label">Status</p>
         <p class="field-value">The Sacred Release</p>
 
-        <p class="field-label">Dominant Hue</p>
+        <p class="field-label">Hues</p>
         <p class="field-value">Ethereal Light Blue, Shimmering Moon-White.</p>
 
+        <h3 class="section-heading">The Character</h3>
+        <p class="body-text no-indent">The energy is heavy yet soft—like cool mist on a fevered brow. The River doesn't ask you to "cheer up"; it meets you in your sorrow, understanding that grief must be felt before it can be released.</p>
+
         <h3 class="section-heading">The Animal: The Koi Fish</h3>
-        <p class="body-text no-indent">The Koi are the silent witnesses of the deep. They glide through the obsidian waters with a slow, deliberate grace.</p>
+        <p class="body-text no-indent">Silent witnesses of the deep. They don't fight the current; they let it carry them. To see a Koi is a reminder to move through your emotions without being swept away by them.</p>
 
-        <p class="note-text">Watch the way a Koi moves through the water. They don't fight the current; they let it carry them. To see a Koi is a reminder that you, too, can move through your emotions without being swept away by them.</p>
+        <p class="field-label">Form &amp; Symbols</p>
+        <p class="field-value">Light Strips — Fluid ribbons of light that swim close to sense and share your pain.</p>
 
-        <p class="field-label">Symbols</p>
-        <p class="field-value">The Moon &amp; The Bottle of Tears — they catch every drop of sorrow, ensuring your burden is never yours to bear alone again.</p>
+        <p class="field-label">The Moon</p>
+        <p class="field-value">The Great Ruler that pulls buried emotions to the surface.</p>
 
-        <div class="artifact">Pressed Artifact: A small, smooth Obsidian Pebble (supposedly holds the echo of a sigh).</div>
+        <p class="field-label">Bottle of Tears</p>
+        <p class="field-value">The Sprites catch your sorrow, ensuring you never carry the weight alone.</p>
 
         <p class="page-num">9</p>
       </div>
@@ -934,43 +1039,41 @@
         <p class="chapter-title">Cloudshore</p>
         <div class="divider">&#8226; &ensp; &#8226; &ensp; &#8226;</div>
 
-        <p class="body-text no-indent">As the mist from the River begins to rise, it no longer feels like damp air, but like an invitation to defy gravity. The heavy obsidian stones give way to a path of white, translucent quartz that winds upward, climbing beyond the tallest canopy. You are leaving the weight of the water behind to meet the breath of the world.</p>
-
-        <p class="body-text">Cloudshore is where the forest meets the sky. It is a realm of blindingly soft whites, pale lavenders, and the endless gold of an eternal dawn. Here, the "ground" is a rolling sea of thick, buoyant clouds that feel firm yet ethereal beneath your feet. There is no horizon; the sky and the land have merged into one vast, open canvas of light.</p>
+        <p class="body-text no-indent">Rising mist becomes an invitation to defy gravity as obsidian stones give way to upward-winding quartz. Leaving the water's weight behind, you ascend beyond the canopy to meet the breath of the world—a realm of soft whites, pale lavenders, and eternal dawn. Here, the "ground" is a sea of buoyant clouds where sky and land merge into an infinite canvas of light.</p>
 
         <h3 class="section-heading">The Sowing of Dreams</h3>
-        <p class="body-text no-indent">Cloudshore is the realm of True Freedom. If the River was for releasing the past, Cloudshore is for claiming the future. Up here, you are encouraged to speak your greatest dreams and deepest desires aloud. You are invited to treat your visions like seeds. As you exhale your hopes into the mist, the clouds catch them, wrapping them in moisture and light.</p>
+        <p class="body-text no-indent">This is the realm of True Freedom. While the River releases the past, Cloudshore claims the future. Speak your deepest desires aloud, treating your visions like seeds. As you exhale your hopes into the mist, the clouds catch and wrap them in light, preparing them to take root in reality.</p>
 
         <h3 class="section-heading">The Mothers &amp; The Herons</h3>
-        <p class="body-text no-indent">This high sanctuary is the Home of The Mothers. They are the ancient, primordial guardians of the Everglade—the very architects of the wind that first whispered to you at the gates of the Thicket. Working in harmony with them are the Herons, the elegant messengers of the heights.</p>
+        <p class="body-text no-indent">Cloudshore is the home of The Mothers, the ancient architects of the wind. Alongside them are the Herons, elegant messengers who bridge the gap between heaven and earth, carrying the Mothers' summons and your own dreams across the veil.</p>
 
         <p class="page-num">10</p>
       </div>
     </div>
     <div class="book-page right">
       <div class="page-inner">
-        <p class="field-note-heading">Field Notes</p>
+        <p class="field-note-heading">Field Notes — Cloudshore</p>
 
-        <p class="body-text no-indent">Up here, the air is thin, sweet, and electric. The energy is one of True Freedom. It feels like the "breath of the world"—a total clarity where the distractions of the lower forest dissolve.</p>
+        <p class="field-label">Status</p>
+        <p class="field-value">True Freedom</p>
+
+        <p class="field-label">Dominant Hue</p>
+        <p class="field-value">Silver, Lilac.</p>
 
         <h3 class="section-heading">The Animal: The Heron</h3>
         <p class="body-text no-indent">The Heron is the sovereign of the heights. With their wide, effortless wingspan, they are the only beings capable of navigating the shifting currents between the Earth and the Mothers.</p>
 
-        <p class="note-text">If you see a Heron silhouetted against the silver-blue sky, pay attention. They are the couriers of the Everglade. A sighting usually means a message is being delivered from the Mothers directly to your heart. Stand still and let the wingspan over you.</p>
+        <p class="note-text">Note to self: If you see a Heron silhouetted against the silver-blue sky, pay attention. They are the couriers of the Everglade. A sighting usually means a message is being delivered from the Mothers directly to your heart. Stand still and let the wingspan over you.</p>
 
         <p class="field-label">Form</p>
-        <p class="field-value">The Wind — the Mothers manifest as the very gusts that surround you, smelling of ozone and high-altitude wildflowers.</p>
+        <p class="field-value">The Wind — The Mothers—the ancient architects of the Everglade—manifest as the very Wind that surrounds you. It moves in constant, playful gusts that smell of ozone and high-altitude wildflowers.</p>
 
         <p class="field-label">Symbol</p>
-        <p class="field-value">Bird Feathers — a "calling card" from the heights. A reminder that you are being watched over.</p>
-
-        <div class="artifact">Pressed Artifact: A single Downy Feather (it seems to float even when placed on the table).</div>
+        <p class="field-value">Bird Feathers — Feathers are the physical anchors of this realm. To find a silver-blue feather in the Thicket or by the River is a "calling card" from the heights—a reminder that you are being watched over by the guardians of the sky.</p>
 
         <div class="divider" style="margin-top:1.5rem;">&#8226; &ensp; &#8226; &ensp; &#8226;</div>
 
-        <p class="note-text">The High Ritual: "Close your eyes and listen to the 'whistling' between the peaks. It isn't just air moving; it's a secret code embedded in the wind. The Mothers are whispering coordinates to your next destination."</p>
-
-        <div class="ornament" style="margin-top:2rem;">&#10053;</div>
+        <div class="ornament" style="margin-top:1rem;">&#10053;</div>
         <p style="text-align:center;font-style:italic;color:var(--ink-faded);font-size:0.82rem;margin-top:0.3rem;letter-spacing:0.1em;">End of the Guide</p>
 
         <p class="page-num">11</p>
@@ -978,6 +1081,7 @@
     </div>
   </div>
 
+</div>
 </div>
 
 <p class="page-counter" id="pageCounter">Cover</p>
@@ -987,11 +1091,11 @@ var spreads = document.querySelectorAll('.spread');
 var total = spreads.length;
 var current = 0;
 var labels = ['Cover', 'Introduction', 'The Glade', 'Arborhaven', 'River of Memories', 'Cloudshore'];
+var flipping = false;
 
 function showSpread(index) {
   spreads.forEach(function(s) { s.classList.remove('active'); });
   spreads[index].classList.add('active');
-  // Reset scroll on both page-inners
   spreads[index].querySelectorAll('.page-inner').forEach(function(p) { p.scrollTop = 0; });
   current = index;
   document.getElementById('prevBtn').disabled = current === 0;
@@ -1001,7 +1105,59 @@ function showSpread(index) {
 
 function flipPage(dir) {
   var next = current + dir;
-  if (next >= 0 && next < total) showSpread(next);
+  if (next < 0 || next >= total || flipping) return;
+  flipping = true;
+
+  // Disable buttons during animation
+  document.getElementById('prevBtn').disabled = true;
+  document.getElementById('nextBtn').disabled = true;
+
+  var overlay = document.getElementById('flipOverlay');
+  var book = document.getElementById('book');
+  var duration = 600; // ms
+
+  // Determine direction class
+  overlay.className = 'flip-overlay flipping ' + (dir > 0 ? 'forward' : 'backward');
+
+  // Position and animate
+  if (dir > 0) {
+    // Forward: right page folds over to the left
+    overlay.style.transformOrigin = 'left center';
+    overlay.style.transform = 'rotateY(0deg)';
+    overlay.style.transition = 'none';
+
+    // Force reflow
+    overlay.offsetHeight;
+
+    overlay.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+    overlay.style.transform = 'rotateY(-180deg)';
+  } else {
+    // Backward: left page folds over to the right
+    overlay.style.transformOrigin = 'right center';
+    overlay.style.transform = 'rotateY(0deg)';
+    overlay.style.transition = 'none';
+
+    overlay.offsetHeight;
+
+    overlay.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.4, 0.0, 0.2, 1)';
+    overlay.style.transform = 'rotateY(180deg)';
+  }
+
+  // Switch content at the halfway point
+  setTimeout(function() {
+    showSpread(next);
+  }, duration * 0.45);
+
+  // Clean up after animation
+  setTimeout(function() {
+    overlay.className = 'flip-overlay';
+    overlay.style.transform = '';
+    overlay.style.transition = '';
+    flipping = false;
+    // Re-enable appropriate buttons
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+  }, duration + 50);
 }
 
 document.addEventListener('keydown', function(e) {
