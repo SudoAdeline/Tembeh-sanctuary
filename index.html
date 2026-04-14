@@ -3619,12 +3619,20 @@ renderMusic();
 renderWriting();
 renderArt();
 
-// Loading screen — show for at least 2.5s, then fade out
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    document.getElementById('loader').classList.add('fade-out');
-  }, 2500);
-});
+// Loading screen — only show on first visit per session
+(function() {
+  var loader = document.getElementById('loader');
+  if (sessionStorage.getItem('everglade_loaded')) {
+    loader.remove();
+    return;
+  }
+  sessionStorage.setItem('everglade_loaded', '1');
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      loader.classList.add('fade-out');
+    }, 2500);
+  });
+})();
 </script>
 </body>
 </html>
