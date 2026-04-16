@@ -721,36 +721,48 @@
     100% { transform: translateY(-20vh); opacity: 0; }
   }
 
-  /* Mobile: stack pages vertically */
+  /* Mobile: single page view, no scroll */
   @media (max-width: 860px) {
-    body { overflow-y: auto; }
+    body { overflow: hidden; }
+    .book-wrapper { perspective: none; width: 100%; height: 100%; }
     .book {
       flex-direction: column;
-      width: 94vw;
-      max-width: 500px;
-      height: auto;
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
       max-height: none;
-      border-radius: 6px;
-      margin: 4rem auto 3rem;
+      border-radius: 0;
+      box-shadow: none;
     }
     .book::before { display: none; }
-    .book-page.left, .book-page.right {
+    .spread.active { display: block; width: 100%; height: 100%; }
+    .book-page {
+      position: absolute;
+      inset: 0;
       border-radius: 0;
-      min-height: 75vh;
+      display: none;
     }
-    .book-page.left { border-radius: 6px 6px 0 0; }
-    .book-page.right { border-radius: 0 0 6px 6px; }
-    .book-page.left::after { display: none; }
-    .book-page.right::after { display: none; }
-    .book-page.left::before { border-radius: 6px 6px 0 0; }
-    .book-page.right::before { border-radius: 0 0 6px 6px; }
-    .page-inner { padding: 2rem 1.6rem; position: relative; overflow: visible; }
+    .book-page.mobile-active {
+      display: block;
+    }
+    .book-page.left::after, .book-page.right::after { display: none; }
+    .book-page.left::before, .book-page.right::before {
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .page-inner {
+      padding: 3.5rem 1.8rem 2rem;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
     .nav-arrow { width: 44px; height: 44px; font-size: 1.3rem; }
     .nav-arrow.prev { left: 0.5rem; }
     .nav-arrow.next { right: 0.5rem; }
     .back-link { top: 0.8rem; left: 0.8rem; font-size: 0.85rem; }
     .body-text { font-size: 0.88rem; text-align: left; }
     .flip-overlay { display: none !important; }
+    .page-counter { bottom: 0.6rem; }
   }
 </style>
 </head>
@@ -1098,7 +1110,7 @@ function showSpread(index) {
   document.getElementById('pageCounter').textContent = labels[current] + '  ·  ' + (current + 1) + ' / ' + total;
 }
 
-function flipPage(dir) {
+var flipPage = function(dir) {
   var next = current + dir;
   if (next < 0 || next >= total || flipping) return;
   flipping = true;
@@ -1192,7 +1204,86 @@ function fitPages() {
   });
 }
 
-showSpread(0);
+// === MOBILE: single-page navigation ===
+var isMobile = window.matchMedia('(max-width: 860px)');
+var allPages = [];
+var mobileIndex = 0;
+
+function buildMobilePages() {
+  allPages = [];
+  spreads.forEach(function(s) {
+    var pages = s.querySelectorAll('.book-page');
+    pages.forEach(function(p) { allPages.push(p); });
+  });
+}
+
+function showMobilePage(index) {
+  // Hide all pages
+  allPages.forEach(function(p) { p.classList.remove('mobile-active'); });
+  // Show all spreads but only the active page within the active spread
+  spreads.forEach(function(s) { s.classList.remove('active'); });
+
+  // Find which spread this page belongs to
+  var spread = allPages[index].closest('.spread');
+  spread.classList.add('active');
+  allPages[index].classList.add('mobile-active');
+
+  mobileIndex = index;
+  document.getElementById('prevBtn').disabled = mobileIndex === 0;
+  document.getElementById('nextBtn').disabled = mobileIndex === allPages.length - 1;
+
+  // Page label
+  var spreadIndex = Array.prototype.indexOf.call(spreads, spread);
+  var isLeft = allPages[index].classList.contains('left');
+  document.getElementById('pageCounter').textContent = labels[spreadIndex] + '  ·  ' + (mobileIndex + 1) + ' / ' + allPages.length;
+
+  // Fit this page
+  var inner = allPages[index].querySelector('.page-inner');
+  if (inner) {
+    inner.style.fontSize = '';
+    var scale = 100;
+    while (inner.scrollHeight > inner.clientHeight + 2 && scale > 70) {
+      scale -= 2;
+      inner.style.fontSize = scale + '%';
+    }
+  }
+}
+
+function flipMobilePage(dir) {
+  var next = mobileIndex + dir;
+  if (next >= 0 && next < allPages.length) showMobilePage(next);
+}
+
+// Override flipPage and showSpread on mobile
+var originalFlipPage = flipPage;
+var originalShowSpread = showSpread;
+
+function initMobile() {
+  buildMobilePages();
+  flipPage = function(dir) { flipMobilePage(dir); };
+  showMobilePage(0);
+}
+
+function initDesktop() {
+  flipPage = originalFlipPage;
+  allPages.forEach(function(p) { p.classList.remove('mobile-active'); });
+  showSpread(current);
+}
+
+if (isMobile.matches) {
+  initMobile();
+} else {
+  showSpread(0);
+}
+
+isMobile.addEventListener('change', function(e) {
+  if (e.matches) {
+    initMobile();
+  } else {
+    initDesktop();
+  }
+});
+
 // Fit after fonts load
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(fitPages);
