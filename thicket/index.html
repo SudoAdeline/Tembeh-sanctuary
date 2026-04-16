@@ -347,10 +347,18 @@
 </section>
 
 <script>
-// Email gate → Discord redirect
+// Shared subscription flag
+var SUBSCRIBED_KEY = 'everglade_subscribed';
+
+// If already subscribed (from Journey or previous Thicket visit), skip straight to Discord
+if (localStorage.getItem(SUBSCRIBED_KEY)) {
+  window.location.href = 'https://discord.gg/HuepPPnr';
+}
+
+// Email gate → set flag, then Discord redirect
 const form = document.getElementById('thicket-gate');
 form.addEventListener('submit', function() {
-  // Small delay to let the Mailchimp submission go through, then redirect to Discord
+  localStorage.setItem(SUBSCRIBED_KEY, '1');
   setTimeout(function() {
     window.location.href = 'https://discord.gg/HuepPPnr';
   }, 800);

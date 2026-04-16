@@ -1203,15 +1203,17 @@ window.addEventListener('resize', fitPages);
 // === GATE LOGIC ===
 var PASS_KEY = 'everglade_journey_pass';
 var UNLOCKED_KEY = 'everglade_journey_unlocked';
+var SUBSCRIBED_KEY = 'everglade_subscribed';
 
-// Check if already unlocked this session
-if (sessionStorage.getItem(UNLOCKED_KEY)) {
+// Check if already unlocked this session OR subscribed previously
+if (sessionStorage.getItem(UNLOCKED_KEY) || localStorage.getItem(SUBSCRIBED_KEY)) {
   document.getElementById('gate').classList.add('hidden');
 }
 
 // Email form: subscribe then unlock
 document.getElementById('emailGate').addEventListener('submit', function() {
   sessionStorage.setItem(UNLOCKED_KEY, '1');
+  localStorage.setItem(SUBSCRIBED_KEY, '1');
   setTimeout(function() {
     document.getElementById('gate').classList.add('hidden');
   }, 600);
