@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Songs of the Everglade — 30 May 2026</title>
+<meta name="description" content="An intimate evening of original music, candlelight, and shared stillness. The first gathering of its kind. Marsilius-Arkaden, Heidelberg.">
+<meta property="og:title" content="Songs of the Everglade — 30 May 2026">
+<meta property="og:description" content="An intimate evening of original music, candlelight, and shared stillness. The first gathering of its kind.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --morning: #e8dfc8;
+    --sage: #7a9c6e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0f0b;
+    color: var(--morning);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HERO === */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    filter: brightness(0.35) saturate(0.65);
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse at center, rgba(10,15,11,0.3) 0%, rgba(10,15,11,0.7) 70%),
+      linear-gradient(to bottom, rgba(10,15,11,0.5) 0%, rgba(10,15,11,0.2) 30%, rgba(10,15,11,0.2) 70%, rgba(10,15,11,0.85) 100%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+  }
+
+  .hero-label {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(122,156,110,0.7);
+    margin-bottom: 1.8rem;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--morning);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-date {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(210,200,180,0.5);
+    margin-bottom: 0.6rem;
+  }
+
+  .hero-venue {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(210,200,180,0.55);
+    letter-spacing: 0.04em;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-line {
+    width: 40px;
+    height: 1px;
+    background: rgba(210,200,180,0.2);
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 2;
+    color: rgba(230,220,200,0.6);
+    margin-bottom: 3rem;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: rgba(230,220,200,0.9);
+    background: rgba(210,200,180,0.08);
+    border: 1px solid rgba(210,200,180,0.3);
+    border-radius: 2rem;
+    padding: 1rem 2.8rem;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+  }
+  .hero-cta:hover {
+    background: rgba(210,200,180,0.18);
+    border-color: rgba(210,200,180,0.5);
+    color: var(--morning);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  /* === DETAILS SECTION === */
+  .details {
+    position: relative;
+    padding: 5rem 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .details-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(210,200,180,0.7);
+    margin-bottom: 2rem;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    text-align: left;
+    margin-bottom: 3rem;
+  }
+
+  .detail-item {
+    padding: 1.5rem;
+    border: 1px solid rgba(210,200,180,0.08);
+    border-radius: 8px;
+    background: rgba(210,200,180,0.02);
+  }
+
+  .detail-label {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(122,156,110,0.6);
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(210,200,180,0.75);
+    line-height: 1.6;
+  }
+
+  .details-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 2;
+    color: rgba(230,220,200,0.45);
+    margin-bottom: 3rem;
+  }
+
+  .details-cta {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: rgba(230,220,200,0.85);
+    background: rgba(210,200,180,0.06);
+    border: 1px solid rgba(210,200,180,0.2);
+    border-radius: 2rem;
+    padding: 0.8rem 2.2rem;
+    text-decoration: none;
+    transition: all 0.4s ease;
+  }
+  .details-cta:hover {
+    background: rgba(210,200,180,0.14);
+    border-color: rgba(210,200,180,0.4);
+    color: var(--morning);
+    transform: translateY(-2px);
+  }
+
+  /* === EXPLORE SECTION === */
+  .explore {
+    padding: 4rem 2rem 5rem;
+    text-align: center;
+    border-top: 1px solid rgba(210,200,180,0.06);
+  }
+
+  .explore-label {
+    font-family: 'Karla', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(210,200,180,0.3);
+    margin-bottom: 1.5rem;
+  }
+
+  .explore-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .explore-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.45);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(210,200,180,0.1);
+  }
+  .explore-link:hover {
+    color: var(--morning);
+    border-color: rgba(210,200,180,0.3);
+  }
+
+  /* === BACK LINK === */
+  .back-link {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 100;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(210,200,180,0.5);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .back-link:hover { color: var(--morning); }
+
+  /* === PARTICLES === */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle {
+    position: absolute; border-radius: 50%;
+    background: rgba(168,184,154,0.1);
+    animation: float-up linear infinite;
+  }
+  @keyframes float-up {
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-20vh); opacity: 0; }
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 1.5rem; }
+    .hero-content { max-width: 100%; }
+    .details { padding: 3.5rem 1.5rem; }
+    .details-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+    .back-link { top: 1rem; left: 1rem; font-size: 0.85rem; }
+    .explore-links { flex-direction: column; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a href="/" class="back-link">&larr; Back to Everglade</a>
+<div class="particles" id="particles"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <img src="/gatherings.png" alt="" class="hero-bg">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-label">A Gathering in the Glade</p>
+    <h1 class="hero-title">Songs of the Everglade</h1>
+    <p class="hero-date">30 May 2026</p>
+    <p class="hero-venue">Marsilius-Arkaden &mdash; Heidelberg, DE</p>
+    <div class="hero-line"></div>
+    <p class="hero-desc">An intimate evening of original music, candlelight, and shared stillness. The first gathering of its kind. The hearth is lit and the clearing is ready &mdash; all that remains is you.</p>
+    <a href="https://pretix.eu/tembeh/hd-2026-05/" target="_blank" rel="noopener" class="hero-cta">Enter the Clearing</a>
+  </div>
+</section>
+
+<!-- Details -->
+<section class="details">
+  <h2 class="details-heading">What awaits</h2>
+  <div class="details-grid">
+    <div class="detail-item">
+      <p class="detail-label">When</p>
+      <p class="detail-value">Friday, 30 May 2026</p>
+    </div>
+    <div class="detail-item">
+      <p class="detail-label">Where</p>
+      <p class="detail-value">Marsilius-Arkaden<br>Heidelberg, Germany</p>
+    </div>
+    <div class="detail-item">
+      <p class="detail-label">The Evening</p>
+      <p class="detail-value">Original songs, acoustic frequencies, and moments of shared silence by candlelight.</p>
+    </div>
+    <div class="detail-item">
+      <p class="detail-label">The Invitation</p>
+      <p class="detail-value">Come as you are. No dress code, no pretence. Just presence.</p>
+    </div>
+  </div>
+
+  <p class="details-body">This is more than a concert. It is a gathering of Seekers &mdash; a space where sound meets stillness and strangers become kin. The Song-Keeper opens the hearth. The spirits hold the space. You bring yourself.</p>
+
+  <a href="https://pretix.eu/tembeh/hd-2026-05/" target="_blank" rel="noopener" class="details-cta">Get Your Seat</a>
+</section>
+
+<!-- Explore -->
+<section class="explore">
+  <p class="explore-label">Go Deeper</p>
+  <div class="explore-links">
+    <a href="/journey" class="explore-link">The Seekers' Journey</a>
+    <a href="/thicket" class="explore-link">The Hidden Thicket</a>
+    <a href="https://tembeh.bandcamp.com/track/everglade" target="_blank" rel="noopener" class="explore-link">Listen on Bandcamp</a>
+    <a href="/" class="explore-link">Return to Everglade</a>
+  </div>
+</section>
+
+<script>
+var pc = document.getElementById('particles');
+for (var i = 0; i < 15; i++) {
+  var p = document.createElement('div');
+  p.className = 'particle';
+  var size = Math.random() * 3 + 1;
+  p.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+(Math.random()*100)+'%;animation-duration:'+(Math.random()*15+10)+'s;animation-delay:'+(Math.random()*10)+'s;';
+  pc.appendChild(p);
+}
+</script>
+</body>
+</html>
